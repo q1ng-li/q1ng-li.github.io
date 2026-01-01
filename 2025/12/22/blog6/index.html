@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang=ch>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="序言最近在看往年ciscn的初赛题，发现难度都还挺大。这次遇到了一个改编于CVE-2022-1292的题目，好好跟着博客分析。 [博客]: https:&#x2F;&#x2F;xz.aliyun.com&#x2F;news&#x2F;11149	“参考” 环境配置Dockerfile 1234567891011121314151617181920212223242526272829# 使用基础 Ubuntu 镜像FROM ubuntu:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CVE-2022-1292">
+<meta property="og:url" content="https://q1ng-li.github.io/2025/12/22/blog6/index.html">
+<meta property="og:site_name" content="q1ng">
+<meta property="og:description" content="序言最近在看往年ciscn的初赛题，发现难度都还挺大。这次遇到了一个改编于CVE-2022-1292的题目，好好跟着博客分析。 [博客]: https:&#x2F;&#x2F;xz.aliyun.com&#x2F;news&#x2F;11149	“参考” 环境配置Dockerfile 1234567891011121314151617181920212223242526272829# 使用基础 Ubuntu 镜像FROM ubuntu:">
+<meta property="og:locale" content="ch_CN">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20251222214834508.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20251222231555063.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20251222232339070.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20251222233007121.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20251222233409548.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20251222233925973.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20251222234212226.png">
+<meta property="article:published_time" content="2025-12-22T08:44:34.000Z">
+<meta property="article:modified_time" content="2025-12-22T15:58:53.425Z">
+<meta property="article:author" content="q1ng">
+<meta property="article:tag" content="CVE">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://q1ng-li.github.io/images/image-20251222214834508.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/1.jpg">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/1.jpg" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/1.jpg">
+          
+        
+    
+    <!-- title -->
+    <title>CVE-2022-1292</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+
+    
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    
+<script src="/lib/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">q1ng</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/home/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/tzvetkov75">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2025/12/23/blog7/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover='$("#i-prev").toggle();' onmouseout='$("#i-prev").toggle();'></i></a></li>
+        
+        
+        <li><a class="icon" href="/2025/12/19/blog5/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://q1ng-li.github.io/2025/12/22/blog6/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://q1ng-li.github.io/2025/12/22/blog6/&text=CVE-2022-1292"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://q1ng-li.github.io/2025/12/22/blog6/&title=CVE-2022-1292"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://q1ng-li.github.io/2025/12/22/blog6/&is_video=false&description=CVE-2022-1292"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=CVE-2022-1292&body=Check out this article: https://q1ng-li.github.io/2025/12/22/blog6/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://q1ng-li.github.io/2025/12/22/blog6/&title=CVE-2022-1292"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://q1ng-li.github.io/2025/12/22/blog6/&title=CVE-2022-1292"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://q1ng-li.github.io/2025/12/22/blog6/&title=CVE-2022-1292"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://q1ng-li.github.io/2025/12/22/blog6/&title=CVE-2022-1292"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://q1ng-li.github.io/2025/12/22/blog6/&name=CVE-2022-1292&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BA%8F%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">序言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="toc-number">2.</span> <span class="toc-text">环境配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%8D%E7%8E%B0"><span class="toc-number">3.</span> <span class="toc-text">复现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%98%E6%96%B9%E4%BF%AE%E5%A4%8D"><span class="toc-number">4.</span> <span class="toc-text">官方修复</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        CVE-2022-1292
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">q1ng</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2025-12-22T08:44:34.000Z" itemprop="datePublished">2025-12-22</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/CVE/" rel="tag">CVE</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h4 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h4><p>最近在看往年ciscn的初赛题，发现难度都还挺大。这次遇到了一个改编于CVE-2022-1292的题目，好好跟着博客分析。</p>
+<p>[博客]: <a target="_blank" rel="noopener" href="https://xz.aliyun.com/news/11149">https://xz.aliyun.com/news/11149</a>	“参考”</p>
+<h4 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h4><p>Dockerfile</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># 使用基础 Ubuntu 镜像<br>FROM ubuntu:20.04<br><br># 避免交互式安装时的卡顿<br>ENV DEBIAN_FRONTEND=noninteractive<br><br># 安装编译所需的依赖和 perl<br>RUN apt-get update &amp;&amp; apt-get install -y \<br>    wget \<br>    make \<br>    gcc \<br>    perl \<br>    ca-certificates \<br>    &amp;&amp; rm -rf /var/lib/apt/lists/*<br><br># 下载并编译受影响的 OpenSSL 版本 (1.1.1n)<br>WORKDIR /usr/local/src<br>RUN wget https://www.openssl.org/source/old/1.1.1/openssl-1.1.1n.tar.gz &amp;&amp; \<br>    tar -zxvf openssl-1.1.1n.tar.gz &amp;&amp; \<br>    cd openssl-1.1.1n &amp;&amp; \<br>    ./config --prefix=/usr/local/ssl --openssldir=/usr/local/ssl &amp;&amp; \<br>    make &amp;&amp; \<br>    make install<br><br># 将新的 openssl 添加到环境变量<br>ENV PATH=&quot;/usr/local/ssl/bin:$&#123;PATH&#125;&quot;<br><br># 创建一个用于复现漏洞的测试目录<br>WORKDIR /reproduce<br></code></pre></td></tr></table></figure>
+
+<p>在Dockerfile所在文件夹里打开终端 输入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">docker build -t cve-2022-1292 .<br></code></pre></td></tr></table></figure>
+
+<p>耐心等待’一会’，接着 </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">docker run --rm -it cve-2022-1292 bash<br></code></pre></td></tr></table></figure>
+
+<p><img src="/images/image-20251222214834508.png" alt="image-20251222214834508"></p>
+<p>现在你进入了这个服务器shell,环境到这里就配置成功了。</p>
+<h4 id="复现"><a href="#复现" class="headerlink" title="复现"></a>复现</h4><p>首先站在巨人的肩膀上，我们知道漏洞存在c_rehash，一个perl文件，可以查看源码。我们就直接聚焦在漏洞处。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">if (@ARGV) &#123;<br>        @dirlist = @ARGV;  //将命令行中输入的参数存到dirlist数组<br>&#125; elsif ($ENV&#123;SSL_CERT_DIR&#125;) &#123;<br>        @dirlist = split /$path_delim/, $ENV&#123;SSL_CERT_DIR&#125;;<br>&#125; else &#123;<br>        $dirlist[0] = &quot;$dir/certs&quot;;<br>&#125;<br><br>if (-d $dirlist[0]) &#123;  //判断$dirlist[0]是不是存在的目录<br>        chdir $dirlist[0];<br>        $openssl=&quot;$pwd/$openssl&quot; if (!-x $openssl);<br>        chdir $pwd;<br>&#125;<br><br>foreach (@dirlist) &#123;<br>        if (-d $_ ) &#123;  //$_表示本次循环的值<br>            if ( -w $_) &#123;  //是否存在且是目录,是否有“写”权限<br>                hash_dir($_);  <br>            &#125; else &#123;<br>                print &quot;Skipping $_, can&#x27;t write\n&quot;;<br>                $errorcount++;<br>            &#125;<br>        &#125;<br>&#125;<br><br>sub hash_dir &#123;<br>        my %hashlist;<br>        print &quot;Doing $_[0]\n&quot;;<br>        chdir $_[0];<br>        opendir(DIR, &quot;.&quot;);<br>        my @flist = sort readdir(DIR); //把当前目录下的文件存flist<br>        closedir DIR;<br>        if ( $removelinks ) &#123;<br>                # Delete any existing symbolic links<br>                foreach (grep &#123;/^[\da-f]+\.r&#123;0,1&#125;\d+$/&#125; @flist) &#123;<br>                        if (-l $_) &#123;   //判断符号链接<br>                                print &quot;unlink $_&quot; if $verbose;<br>                                unlink $_ || warn &quot;Can&#x27;t unlink $_, $!\n&quot;;<br>                        &#125;<br>                &#125;<br>        &#125;<br>        FILE: foreach $fname (grep &#123;/\.(pem)|(crt)|(cer)|(crl)$/&#125; @flist) &#123; // 检查文件名是否含有pem，crt，crl，cer<br>                # Check to see if certificates and/or CRLs present.<br>                my ($cert, $crl) = check_file($fname);<br>                if (!$cert &amp;&amp; !$crl) &#123;<br>                        print STDERR &quot;WARNING: $fname does not contain a certificate or CRL: skipping\n&quot;;<br>                        next;<br>                &#125;<br>                link_hash_cert($fname) if ($cert);<br>                link_hash_crl($fname) if ($crl);<br>        &#125;<br>&#125;<br><br>sub check_file &#123;<br>        my ($is_cert, $is_crl) = (0,0);<br>        my $fname = $_[0];<br>        open IN, $fname;<br>        while(&lt;IN&gt;) &#123;<br>                if (/^-----BEGIN (.*)-----/) &#123;  // 寻找以 &quot;-----BEGIN &quot; 开头的行<br>                        my $hdr = $1;<br>                        if ($hdr =~ /^(X509 |TRUSTED |)CERTIFICATE$/) &#123;<br>                                $is_cert = 1;<br>                                last if ($is_crl);<br>                        &#125; elsif ($hdr eq &quot;X509 CRL&quot;) &#123;<br>                                $is_crl = 1;<br>                                last if ($is_cert);<br>                        &#125;<br>                &#125;<br>        &#125;<br>        close IN;<br>        return ($is_cert, $is_crl);<br>&#125;<br><br><br>sub link_hash_cert &#123;<br>                my $fname = $_[0];<br>                $fname =~ s/\&quot;/\\\&quot;/g;<br>                my ($hash, $fprint) = `&quot;$openssl&quot; x509 $x509hash -fingerprint -noout -in &quot;$fname&quot;`;<br></code></pre></td></tr></table></figure>
+
+
+
+<table>
+<thead>
+<tr>
+<th><strong>命令</strong></th>
+<th><strong>含义</strong></th>
+<th><strong>记忆法</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>n</code></td>
+<td><strong>Next</strong> - 执行下一行</td>
+<td>Next</td>
+</tr>
+<tr>
+<td><code>c</code></td>
+<td><strong>Continue</strong> - 继续运行直到断点</td>
+<td>Continue</td>
+</tr>
+<tr>
+<td><code>p $var</code></td>
+<td><strong>Print</strong> - 打印变量值</td>
+<td>Print</td>
+</tr>
+<tr>
+<td><code>b 123</code></td>
+<td><strong>Breakpoint</strong> - 在第123行设断点</td>
+<td>Break</td>
+</tr>
+<tr>
+<td><code>/text</code></td>
+<td><strong>Search</strong> - 搜索代码文本</td>
+<td>&#x2F; (像vim一样)</td>
+</tr>
+<tr>
+<td><code>q</code></td>
+<td><strong>Quit</strong> - 退出</td>
+<td>Quit</td>
+</tr>
+</tbody></table>
+<p>成功命令执行</p>
+<p><img src="/images/image-20251222231555063.png" alt="image-20251222231555063"></p>
+<p>接下来调试下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">perl -d /usr/local/ssl/bin/c_rehash .<br></code></pre></td></tr></table></figure>
+
+<p>当代码断在这行</p>
+<p><img src="/images/image-20251222232339070.png" alt="image-20251222232339070"></p>
+<p>接下来逐个打印分析</p>
+<p>n，p @dirlist 输出 .  </p>
+<p>直到运行到hash_dir($_);   s 步入函数。运行到my @flist &#x3D; sort readdir(DIR); 查看 @flist </p>
+<p><img src="/images/image-20251222233007121.png" alt="image-20251222233007121"></p>
+<p>接下来运行到my ($cert, $crl) &#x3D; check_file($fname); ，进入看看</p>
+<p><img src="/images/image-20251222233409548.png" alt="image-20251222233409548"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">if (/^-----BEGIN (.*)-----/) &#123;  // 寻找以 &quot;-----BEGIN &quot; 开头的行<br>                        my $hdr = $1;<br>                        if ($hdr =~ /^(X509 |TRUSTED |)CERTIFICATE$/) &#123;<br>                                $is_cert = 1;<br>                                last if ($is_crl);<br></code></pre></td></tr></table></figure>
+
+<p>这里就是为什么开头要构造 —–BEGIN CERTIFICATE—– 其他方式也行</p>
+<p>最后 ，$fname&#x3D;q1ng.crt` touch win`</p>
+<p><img src="/images/image-20251222233925973.png" alt="image-20251222233925973"></p>
+<p>我们套入 my ($hash, $fprint) &#x3D; `“$openssl” x509 $x509hash -fingerprint -noout -in “$fname”&#96;</p>
+<p>即 `“$openssl” x509 $x509hash -fingerprint -noout -in q1ng.crt` touch win`&#96;</p>
+<p>第一层 Perl 把上面这行字符串”$openssl” x509 $x509hash -fingerprint -noout -in q1ng.crt` touch win`扔给了 <code>/bin/sh</code>，第二层，shell开始解析</p>
+<p><img src="/images/image-20251222234212226.png" alt="image-20251222234212226"></p>
+<h4 id="官方修复"><a href="#官方修复" class="headerlink" title="官方修复"></a>官方修复</h4><p>官方将原本的黑名单改为了白名单，后续似乎还是被黑客拿下了。最终修复还是open(my $fh, “-|”, “openssl”, “x509”, “-in”, $fname)，使用参数列表</p>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/home/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/tzvetkov75">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BA%8F%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">序言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="toc-number">2.</span> <span class="toc-text">环境配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%8D%E7%8E%B0"><span class="toc-number">3.</span> <span class="toc-text">复现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%98%E6%96%B9%E4%BF%AE%E5%A4%8D"><span class="toc-number">4.</span> <span class="toc-text">官方修复</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://q1ng-li.github.io/2025/12/22/blog6/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://q1ng-li.github.io/2025/12/22/blog6/&text=CVE-2022-1292"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://q1ng-li.github.io/2025/12/22/blog6/&title=CVE-2022-1292"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://q1ng-li.github.io/2025/12/22/blog6/&is_video=false&description=CVE-2022-1292"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=CVE-2022-1292&body=Check out this article: https://q1ng-li.github.io/2025/12/22/blog6/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://q1ng-li.github.io/2025/12/22/blog6/&title=CVE-2022-1292"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://q1ng-li.github.io/2025/12/22/blog6/&title=CVE-2022-1292"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://q1ng-li.github.io/2025/12/22/blog6/&title=CVE-2022-1292"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://q1ng-li.github.io/2025/12/22/blog6/&title=CVE-2022-1292"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://q1ng-li.github.io/2025/12/22/blog6/&name=CVE-2022-1292&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2026 q1ng
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/home/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/tzvetkov75">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>
