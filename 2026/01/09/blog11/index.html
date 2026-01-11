@@ -17,7 +17,7 @@
 <meta property="og:image" content="https://q1ng-li.github.io/images/image-20260109194604537.png">
 <meta property="og:image" content="https://q1ng-li.github.io/images/image-20260109194757223.png">
 <meta property="article:published_time" content="2026-01-09T11:29:43.000Z">
-<meta property="article:modified_time" content="2026-01-09T11:49:23.915Z">
+<meta property="article:modified_time" content="2026-01-11T09:08:44.297Z">
 <meta property="article:author" content="q1ng">
 <meta property="article:tag" content="调试技巧">
 <meta name="twitter:card" content="summary">
@@ -186,13 +186,16 @@
   <div class="content" itemprop="articleBody">
     <h4 id="情景说明"><a href="#情景说明" class="headerlink" title="情景说明"></a>情景说明</h4><p>不知道你有没有遇到这样的情况，当复现一道web题目时，官方给出了docker文件，里面已经部署好了项目环境和依赖版本，如果你不会进入docker调试，那么你就得本地重复docker的操作，然后本地调试。</p>
 <h4 id="solution"><a href="#solution" class="headerlink" title="solution"></a>solution</h4><p>这里简单介绍一下如何利用vscode链接docker进行调试</p>
-<p>首先看你的docker启动环境，我本人喜欢用wsl启动docker(有的是window图形化界面启动)，像我这样的人群，就先要远程链接docker</p>
+<p>首先看你的docker启动环境，我本人喜欢用wsl启动docker(有的是window图形化界面启动)，像我这样的人群，就先要远程连接wsl</p>
 <p><img src="/./images/image-20260109194520283.png" alt="image-20260109194520283"></p>
 <p>然后再选择附加到正在运行的容器</p>
 <p><img src="/./images/image-20260109194604537.png" alt="image-20260109194604537"></p>
 <p>此时如果你启动了docker,就选择你启动的容器的名字</p>
 <p><img src="/./images/image-20260109194757223.png" alt="image-20260109194757223"></p>
-<p>接着就是正常配置调试设置，就可以愉快的代码审计了。</p>
+<p>接着就是正常配置调试设置 launch.json</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&#123;<br>    &quot;version&quot;: &quot;0.2.0&quot;,<br>    &quot;configurations&quot;: [<br>        &#123;<br>            &quot;name&quot;: &quot;Python: Flask&quot;,<br>            &quot;type&quot;: &quot;python&quot;,<br>            &quot;request&quot;: &quot;launch&quot;,<br>            &quot;module&quot;: &quot;flask&quot;,<br>            &quot;env&quot;: &#123;<br>                &quot;FLASK_APP&quot;: &quot;app.py&quot;,<br>                &quot;FLASK_DEBUG&quot;: &quot;1&quot;<br>            &#125;,<br>            &quot;args&quot;: [&quot;run&quot;, &quot;--no-debugger&quot;, &quot;--no-reload&quot;, &quot;--host=0.0.0.0&quot;, &quot;--port=5001&quot;],<br>            &quot;jinja&quot;: true,<br>            &quot;justMyCode&quot;: false  // &lt;--- 必加！否则进不去第三方库断点<br>        &#125;<br>    ]<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>不得不说vscode确实好用!!</p>
 
   </div>
 </article>
