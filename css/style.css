@@ -2180,23 +2180,25 @@ pre code {
 }
 .pagination a,
 .pagination span {
-  padding: 8px 14px;
-  margin: 0 5px;
-  border: 1px solid #287ba8;
-  color: #a9b7c6;
+  padding: 6px 12px;
+  margin: 0 4px;
+  border: 1px solid transparent;
+  color: #666;
   text-decoration: none;
-  transition: all 0.3s ease;
-  border-radius: 4px;
-  background: rgba(40,123,168,0.1);
+  transition: all 0.2s ease-in-out;
 }
 .pagination a:hover {
-  background: #287ba8;
-  color: #fff;
-  box-shadow: 0 0 10px #287ba8;
+  color: #839192;
+  border-bottom: 1px solid #79b259;
 }
 .pagination .current {
-  background: #287ba8;
-  color: #fff;
+  color: #79b259;
   font-weight: bold;
-  border: 1px solid #287ba8;
+  border-bottom: 1px solid #79b259;
+  background: none;
+}
+.pagination .prev,
+.pagination .next {
+  font-size: 0.9em;
+  color: #79b259;
 }
