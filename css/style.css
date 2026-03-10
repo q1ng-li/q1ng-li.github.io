@@ -2170,3 +2170,33 @@ pre code {
   border-color: #fff;
   font-weight: 100;
 }
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+  margin-bottom: 30px;
+  font-family: 'Courier New', Courier, monospace;
+}
+.pagination a,
+.pagination span {
+  padding: 8px 14px;
+  margin: 0 5px;
+  border: 1px solid #287ba8;
+  color: #a9b7c6;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  background: rgba(40,123,168,0.1);
+}
+.pagination a:hover {
+  background: #287ba8;
+  color: #fff;
+  box-shadow: 0 0 10px #287ba8;
+}
+.pagination .current {
+  background: #287ba8;
+  color: #fff;
+  font-weight: bold;
+  border: 1px solid #287ba8;
+}
