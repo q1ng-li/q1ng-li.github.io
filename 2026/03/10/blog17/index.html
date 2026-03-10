@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang=ch>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="序老实说，这个在tryhackme平台属于Medium难度，但我觉得套路都差不多。很可惜的是并不是自己独立完成，这里就做个复盘总结。 复盘step1 Scan1nmap  -sS 10.48.147.5 -p 1-65535 -vv   第一步基本上都是套路，一般都需要利用Nmap进行扫描，不过这里的命令-vv和-sS ,作用在于提高了扫描速度以及详细信息  可以看到开放了很多端口。80,8000">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tryhackme-TryHack3M:Subscribe复盘">
+<meta property="og:url" content="https://q1ng-li.github.io/2026/03/10/blog17/index.html">
+<meta property="og:site_name" content="q1ng">
+<meta property="og:description" content="序老实说，这个在tryhackme平台属于Medium难度，但我觉得套路都差不多。很可惜的是并不是自己独立完成，这里就做个复盘总结。 复盘step1 Scan1nmap  -sS 10.48.147.5 -p 1-65535 -vv   第一步基本上都是套路，一般都需要利用Nmap进行扫描，不过这里的命令-vv和-sS ,作用在于提高了扫描速度以及详细信息  可以看到开放了很多端口。80,8000">
+<meta property="og:locale" content="ch_CN">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260310162505284.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260310163119498.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260310164756167.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260310164946979.png">
+<meta property="article:published_time" content="2026-03-10T08:14:07.000Z">
+<meta property="article:modified_time" content="2026-03-10T08:53:00.231Z">
+<meta property="article:author" content="q1ng">
+<meta property="article:tag" content="渗透测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://q1ng-li.github.io/images/image-20260310162505284.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/1.jpg">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/1.jpg" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/1.jpg">
+          
+        
+    
+    <!-- title -->
+    <title>tryhackme-TryHack3M:Subscribe复盘</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+
+    
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    
+<script src="/lib/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">q1ng</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/home/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/tzvetkov75">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2026/03/06/blog16/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://q1ng-li.github.io/2026/03/10/blog17/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://q1ng-li.github.io/2026/03/10/blog17/&text=tryhackme-TryHack3M:Subscribe复盘"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://q1ng-li.github.io/2026/03/10/blog17/&title=tryhackme-TryHack3M:Subscribe复盘"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://q1ng-li.github.io/2026/03/10/blog17/&is_video=false&description=tryhackme-TryHack3M:Subscribe复盘"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=tryhackme-TryHack3M:Subscribe复盘&body=Check out this article: https://q1ng-li.github.io/2026/03/10/blog17/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://q1ng-li.github.io/2026/03/10/blog17/&title=tryhackme-TryHack3M:Subscribe复盘"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://q1ng-li.github.io/2026/03/10/blog17/&title=tryhackme-TryHack3M:Subscribe复盘"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://q1ng-li.github.io/2026/03/10/blog17/&title=tryhackme-TryHack3M:Subscribe复盘"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://q1ng-li.github.io/2026/03/10/blog17/&title=tryhackme-TryHack3M:Subscribe复盘"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://q1ng-li.github.io/2026/03/10/blog17/&name=tryhackme-TryHack3M:Subscribe复盘&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BA%8F"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%8D%E7%9B%98"><span class="toc-number">2.</span> <span class="toc-text">复盘</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#step1-Scan"><span class="toc-number">2.0.1.</span> <span class="toc-text">step1 Scan</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#step2-Access-Web"><span class="toc-number">2.0.2.</span> <span class="toc-text">step2  Access Web</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#end"><span class="toc-number">2.0.2.1.</span> <span class="toc-text">end</span></a></li></ol></li></ol></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        tryhackme-TryHack3M:Subscribe复盘
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">q1ng</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2026-03-10T08:14:07.000Z" itemprop="datePublished">2026-03-10</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="tag">渗透测试</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="序"><a href="#序" class="headerlink" title="序"></a>序</h1><p>老实说，这个在tryhackme平台属于Medium难度，但我觉得套路都差不多。很可惜的是并不是自己独立完成，这里就做个复盘总结。</p>
+<h1 id="复盘"><a href="#复盘" class="headerlink" title="复盘"></a>复盘</h1><h3 id="step1-Scan"><a href="#step1-Scan" class="headerlink" title="step1 Scan"></a>step1 Scan</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">nmap  -sS 10.48.147.5 -p 1-65535 -vv <br></code></pre></td></tr></table></figure>
+
+<p>第一步基本上都是套路，一般都需要利用Nmap进行扫描，不过这里的命令-vv和-sS ,作用在于提高了扫描速度以及详细信息</p>
+<p><img src="/./images/image-20260310162505284.png" alt="image-20260310162505284"></p>
+<p>可以看到开放了很多端口。80,8000,8089,8191,40009</p>
+<h3 id="step2-Access-Web"><a href="#step2-Access-Web" class="headerlink" title="step2  Access Web"></a>step2  Access Web</h3><p>我们先是默认进入80端口，第一个目标是为了获得invite code.一开始我就利用gobuster进行目录扫描，发现存在phpmyadmin这个目录，我就猜想会不会code藏在数据库里？我先是利用root&#x2F;root等常见弱口令登录，发现不起效果，于是便一直卡在这里</p>
+<p><img src="/./images/image-20260310163119498.png" alt="image-20260310163119498"></p>
+<p>看了wp发现，在&#x2F;js&#x2F;目录下，存在一个简单的invite.js</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function e()&#123;<br>    var e = window.location.hostname;<br>    if(e === &quot;capture3millionsubscribers.thm&quot;)&#123;<br>        var o = new XMLHttpRequest;<br>        o.open(&quot;POST&quot;,&quot;inviteCode1337HM.php&quot;,true); <br>        o.onload = function()&#123; <br>            if(this.status == 200)&#123; <br>                console.log(&quot;Invite Code:&quot;, this.responseText); <br>            &#125; else &#123;<br>                console.error(&quot;Error fetching invite code.&quot;); <br>            &#125;<br>        &#125;;<br>        o.send();<br>    &#125; else if(e === &quot;hackme.thm&quot;)&#123;<br>        console.log(&quot;This function does not operate on hackme.thm&quot;);<br>    &#125; else &#123;<br>        console.log(&quot;Lol!! Are you smart enought to get the invite code?&quot;);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，e这个变量存储域名，如果域名为capture3millionsubscribers.thm，然后POST请求inviteCode1337HM.php，就会打印出invite code.</p>
+<p>第二个目标是获得admin的token,根据上一题获得的invite code,我们就可以成功注册登录。进入到服务内部，有一个VIP服务，而这个字段存储在cookie中，我们可以自定义修改，成功进入这个vip room（当初提醒自己要注意这个字段，却还是没看见），到了vip room，网页源代码中有一个link,点击(同时也要修改isvip&#x3D;true),这里面可以执行部分系统指令，我们查看config.php，这里面就存着token&#x3D; ACC#SS_TO_ADM1N_P@NEL,同时给了url（由于没有dns服务器，注意添加hosts）</p>
+<p>进入这个url,发现403，权限不足。接下来再次进行目录扫描</p>
+<p><img src="/./images/image-20260310164756167.png" alt="image-20260310164756167"></p>
+<p>发现存在login目录，这里登陆框随便测试发现存在sql注入。手工技术不行。。。于是直接sqlmap起手，获得了</p>
+<p><img src="/./images/image-20260310164946979.png" alt="image-20260310164946979"></p>
+<p>登录后就具有admin权限，修改功能点</p>
+<p>差不多这样就结束了，还是有些收获的</p>
+<h4 id="end"><a href="#end" class="headerlink" title="end"></a>end</h4><p>最近感觉自己很差劲，唉，学了也快一年了，什么也没有精通。碰到卡住的点还是很难自己思考，看了wp恍然大悟，唉，仍需努力吧</p>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/home/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/tzvetkov75">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BA%8F"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%8D%E7%9B%98"><span class="toc-number">2.</span> <span class="toc-text">复盘</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#step1-Scan"><span class="toc-number">2.0.1.</span> <span class="toc-text">step1 Scan</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#step2-Access-Web"><span class="toc-number">2.0.2.</span> <span class="toc-text">step2  Access Web</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#end"><span class="toc-number">2.0.2.1.</span> <span class="toc-text">end</span></a></li></ol></li></ol></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://q1ng-li.github.io/2026/03/10/blog17/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://q1ng-li.github.io/2026/03/10/blog17/&text=tryhackme-TryHack3M:Subscribe复盘"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://q1ng-li.github.io/2026/03/10/blog17/&title=tryhackme-TryHack3M:Subscribe复盘"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://q1ng-li.github.io/2026/03/10/blog17/&is_video=false&description=tryhackme-TryHack3M:Subscribe复盘"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=tryhackme-TryHack3M:Subscribe复盘&body=Check out this article: https://q1ng-li.github.io/2026/03/10/blog17/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://q1ng-li.github.io/2026/03/10/blog17/&title=tryhackme-TryHack3M:Subscribe复盘"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://q1ng-li.github.io/2026/03/10/blog17/&title=tryhackme-TryHack3M:Subscribe复盘"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://q1ng-li.github.io/2026/03/10/blog17/&title=tryhackme-TryHack3M:Subscribe复盘"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://q1ng-li.github.io/2026/03/10/blog17/&title=tryhackme-TryHack3M:Subscribe复盘"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://q1ng-li.github.io/2026/03/10/blog17/&name=tryhackme-TryHack3M:Subscribe复盘&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2026 q1ng
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/home/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/tzvetkov75">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>
