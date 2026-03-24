@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="概述这是一篇应急响应靶机通关博客。这个靶机来自知攻善防实验室，一次不错的体验，以下是靶机概述  前景需要：小李在值守的过程中，发现有CPU占用飙升，出于胆子小，就立刻将服务器关机，这是他的服务器系统，请你找出以下内容，并作为通关条件： 1.攻击者的shell密码2.攻击者的IP地址3.攻击者的隐藏账户名称4.攻击者挖矿程序的矿池域名 用户：administrator密码&#x5a;&#x67;&amp;#">
+    <meta name="description" content="概述这是一篇应急响应靶机通关博客。这个靶机来自知攻善防实验室，一次不错的体验，以下是靶机概述  前景需要：小李在值守的过程中，发现有CPU占用飙升，出于胆子小，就立刻将服务器关机，这是他的服务器系统，请你找出以下内容，并作为通关条件： 1.攻击者的shell密码2.攻击者的IP地址3.攻击者的隐藏账户名称4.攻击者挖矿程序的矿池域名 用户：administrator密码&#x5a;&#103;&amp;#">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Web1应急响应（CVE-2024-33752）">
 <meta property="og:url" content="https://q1ng-li.github.io/2026/02/02/blog12/index.html">
 <meta property="og:site_name" content="q1ng">
-<meta property="og:description" content="概述这是一篇应急响应靶机通关博客。这个靶机来自知攻善防实验室，一次不错的体验，以下是靶机概述  前景需要：小李在值守的过程中，发现有CPU占用飙升，出于胆子小，就立刻将服务器关机，这是他的服务器系统，请你找出以下内容，并作为通关条件： 1.攻击者的shell密码2.攻击者的IP地址3.攻击者的隐藏账户名称4.攻击者挖矿程序的矿池域名 用户：administrator密码&#x5a;&#x67;&amp;#">
+<meta property="og:description" content="概述这是一篇应急响应靶机通关博客。这个靶机来自知攻善防实验室，一次不错的体验，以下是靶机概述  前景需要：小李在值守的过程中，发现有CPU占用飙升，出于胆子小，就立刻将服务器关机，这是他的服务器系统，请你找出以下内容，并作为通关条件： 1.攻击者的shell密码2.攻击者的IP地址3.攻击者的隐藏账户名称4.攻击者挖矿程序的矿池域名 用户：administrator密码&#x5a;&#103;&amp;#">
 <meta property="og:locale" content="ch_CN">
 <meta property="og:image" content="https://q1ng-li.github.io/images/image-20260202202120337.png">
 <meta property="og:image" content="https://q1ng-li.github.io/images/image-20260202202535897.png">
@@ -196,7 +196,7 @@
     <h4 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h4><p>这是一篇应急响应靶机通关博客。这个靶机来自知攻善防实验室，一次不错的体验，以下是靶机概述 </p>
 <p>前景需要：<br>小李在值守的过程中，发现有CPU占用飙升，出于胆子小，就立刻将服务器关机，这是他的服务器系统，请你找出以下内容，并作为通关条件：</p>
 <p>1.攻击者的shell密码<br>2.攻击者的IP地址<br>3.攻击者的隐藏账户名称<br>4.攻击者挖矿程序的矿池域名</p>
-<p>用户：<br>administrator<br>密码<br><a href="mailto:&#x5a;&#x67;&#115;&#102;&#x40;&#x61;&#x64;&#109;&#105;&#110;&#x2e;&#x63;&#111;&#x6d;">&#x5a;&#x67;&#115;&#102;&#x40;&#x61;&#x64;&#109;&#105;&#110;&#x2e;&#x63;&#111;&#x6d;</a></p>
+<p>用户：<br>administrator<br>密码<br><a href="mailto:&#x5a;&#103;&#x73;&#102;&#x40;&#x61;&#x64;&#x6d;&#x69;&#x6e;&#x2e;&#x63;&#x6f;&#109;">&#x5a;&#103;&#x73;&#102;&#x40;&#x61;&#x64;&#x6d;&#x69;&#x6e;&#x2e;&#x63;&#x6f;&#109;</a></p>
 <p>下载的话可以去关注知攻善防公众号</p>
 <h4 id="解题过程"><a href="#解题过程" class="headerlink" title="解题过程"></a>解题过程</h4><p>虚拟机打开靶场，一个windows系统，账号密码登入administrator用户。桌面上有一个phpstudy，我就直接启动了这个web服务，一个EMLOG站点，后台一个弱口令admin&#x2F;123456就登入成功。不过我现在扮演的是一个即将失业的小李，急切的进行应急响应。</p>
 <p>第一题是攻击者的shell密码，那就扫描看看黑客上传的木马。D盾来扫描一下，发现存在shell.php</p>
