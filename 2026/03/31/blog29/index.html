@@ -19,7 +19,7 @@
 <meta property="og:image" content="https://q1ng-li.github.io/images/image-20260402181056241.png">
 <meta property="og:image" content="https://q1ng-li.github.io/images/image-20260402184126665.png">
 <meta property="article:published_time" content="2026-03-31T09:31:08.000Z">
-<meta property="article:modified_time" content="2026-04-02T10:50:06.278Z">
+<meta property="article:modified_time" content="2026-04-15T16:45:05.047Z">
 <meta property="article:author" content="q1ng">
 <meta property="article:tag" content="java安全">
 <meta name="twitter:card" content="summary">
@@ -293,6 +293,8 @@
 <hr>
 <p>这里有个误区，按道理来说在类加载时，应该会执行static静态代码块，可为什么上述最终却还是要执行<code>AbstractTranslet translet = (AbstractTranslet) _class[_transletIndex].newInstance();</code>才会触发，原因是在类加载的类初始化过程中才会执行代码，而我们这里仅仅是类加载的加载阶段</p>
 <hr>
+<p><code>Class.forName(&quot;ClassName&quot;, true, loader)</code>  — 初始化阶段</p>
+<p><code>defineClass</code>  字节数组转换为对象，它只完成了 加载（Loading） 阶段</p>
 <h1 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h1><p>至此，应该大概可以理解TemplateSImpl链的触发，不过在此我想再谈谈类的初始化</p>
 <p>现在回头看看p神的java安全漫谈，反复咀嚼仍觉得味道微甜</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">public class TrainPrint &#123;<br> &#123;<br> System.out.printf(&quot;Empty block initial %s\n&quot;, this.getClass());<br> &#125;<br> static &#123;<br> System.out.printf(&quot;Static initial %s\n&quot;, TrainPrint.class);<br> &#125;<br> public TrainPrint() &#123;<br> System.out.printf(&quot;Initial %s\n&quot;, this.getClass());<br> &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
