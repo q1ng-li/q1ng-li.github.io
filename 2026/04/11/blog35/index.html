@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://q1ng-li.github.io/images/image-20260413193834395.png">
 <meta property="og:image" content="https://q1ng-li.github.io/images/image-20260413193920768.png">
 <meta property="article:published_time" content="2026-04-11T07:32:44.000Z">
-<meta property="article:modified_time" content="2026-04-13T11:48:34.623Z">
+<meta property="article:modified_time" content="2026-07-08T09:19:36.700Z">
 <meta property="article:author" content="q1ng">
 <meta property="article:tag" content="java安全">
 <meta name="twitter:card" content="summary">
@@ -208,7 +208,7 @@
 <h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><p>新建一个maven项目(本人选择jdk8_u65)，pom.xml内容如下</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&lt;dependencies&gt;<br>    &lt;dependency&gt;<br>        &lt;groupId&gt;mysql&lt;/groupId&gt;<br>        &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;<br>        &lt;version&gt;8.0.19&lt;/version&gt;<br>    &lt;/dependency&gt;<br>    &lt;dependency&gt;<br>        &lt;groupId&gt;commons-collections&lt;/groupId&gt;<br>        &lt;artifactId&gt;commons-collections&lt;/artifactId&gt;<br>        &lt;version&gt;3.2.1&lt;/version&gt;<br>    &lt;/dependency&gt;<br>&lt;/dependencies&gt;<br></code></pre></td></tr></table></figure>
 
-<p>我们先构造一个jdbc客户端。了解jdbc运行机制</p>
+<p>我们先构造一个jdbc客户端。了解jdbc运行机制（数据库为8.x版本时,queryInterceptors参数指定ServerStatusDiffInterceptor）</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">import java.sql.*;<br><br>public class Jdbc_client &#123;<br>    public static void main(String[] args) throws Exception &#123;         // 1. 加载驱动<br>        Class.forName(&quot;com.mysql.cj.jdbc.Driver&quot;);<br>        String jdbc_url = &quot;jdbc:mysql://127.0.0.1:3306/root?characterEncoding=UTF-8&amp;serverTimezone=Asia/Shanghai&quot; +<br>                &quot;&amp;autoDeserialize=true&quot; +<br>                &quot;&amp;queryInterceptors=com.mysql.cj.jdbc.interceptors.ServerStatusDiffInterceptor&quot;;<br>        Connection con = DriverManager.getConnection(jdbc_url, &quot;root&quot;, &quot;root&quot;);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
 
 <p>看到Class.forName，不自觉想到上次学习的类加载机制，这里需要加载com.mysql.jdbc.Driver，还记得之前的pom.xml,类加载过程中会向classpath中寻找，正是在mysql-connector-java-8.0.19.jar中，后续就是正常查询本地数据库的内容</p>
@@ -354,7 +354,8 @@
 <p><img src="/./images/image-20260413193834395.png" alt="image-20260413193834395"></p>
 <p>反弹shell</p>
 <p><img src="/./images/image-20260413193920768.png" alt="image-20260413193920768"></p>
-<h3 id="题目总结"><a href="#题目总结" class="headerlink" title="题目总结"></a>题目总结</h3><p>看到大佬的wp中除了jdbc反序列化 to rce ,还有 to 任意文件读取的思路 </p>
+<h3 id="题目总结"><a href="#题目总结" class="headerlink" title="题目总结"></a>题目总结</h3><p>这是一个典型的二次反序列化的题目，通过对cookie的data值反序列化，由于源码中对反序列化的类有严格要求，所以此次反序列化作为跳板进而去触发jdbc；对于如何触发的jdbc,上文中提到的代理是关键，由于poc最后包装的是infoproxy，也就是databaseInfo类，调用这个类中的方法触发代理，进而激活jdbc反序列化</p>
+<p>看到大佬的wp中除了jdbc反序列化 to rce ,还有 to 任意文件读取的思路 </p>
 <blockquote>
 <p> <code>https://github.com/rmb122/rogue_mysql_server</code> 具体配置按 <code>Readme</code></p>
 </blockquote>
